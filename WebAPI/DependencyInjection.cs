@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Serilog;
 using WebAPI.Middlewares;
 using WebAPI.OptionsSetup;
 
@@ -10,14 +11,23 @@ namespace WebAPI
         {
             var assembly = typeof(DependencyInjection).Assembly;
 
+            // Common setups
             services.AddControllers();
             services.AddEndpointsApiExplorer();
+            services.AddHttpContextAccessor();
+
+            // Authorization
+            services.AddAuthorization();
+            services.ConfigureOptions<AuthorizationOptionsSetup>();
+
+            // Swagger
             services.AddSwaggerGen();
+            services.ConfigureOptions<SwaggerOptionsSetup>();
 
             // Configuring Cors
             services.AddCors(options =>
             {
-                options.AddPolicy(name: "_publicPolicy",
+                options.AddPolicy(name: "PublicPolicy",
                     policy => policy.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader()
                 );
             });
@@ -30,6 +40,12 @@ namespace WebAPI
 
             // Custom middlewares
             services.AddTransient<GlobalExceptionMiddleware>();
+
+            // Logging
+            services.AddLogging(builder =>
+            {
+                builder.AddSerilog();
+            });
 
             return services;
         }

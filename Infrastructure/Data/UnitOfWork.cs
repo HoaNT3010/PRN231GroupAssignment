@@ -14,7 +14,7 @@ namespace Infrastructure.Data
         private IDbContextTransaction? transaction;
 
         // Logger
-        private readonly ILogger logger;
+        private readonly ILogger<UnitOfWork> logger;
 
         // Repositories
         public IStaffRepository StaffRepository { get; } = null!;
@@ -27,7 +27,7 @@ namespace Infrastructure.Data
         public IInvoiceRepository InvoiceRepository { get; } = null!;
         public IInvoiceDetailRepository InvoiceDetailRepository { get; } = null!;
 
-        public UnitOfWork(StoreDbContext context, ILogger logger, IStaffRepository staffRepository, ICategoryRepository categoryRepository, IProductRepository productRepository, ICustomerRepository customerRepository, ICardRepository cardRepository, IWalletRepository walletRepository, ITransactionRepository transactionRepository, IInvoiceRepository invoiceRepository, IInvoiceDetailRepository invoiceDetailRepository)
+        public UnitOfWork(StoreDbContext context, ILogger<UnitOfWork> logger, IStaffRepository staffRepository, ICategoryRepository categoryRepository, IProductRepository productRepository, ICustomerRepository customerRepository, ICardRepository cardRepository, IWalletRepository walletRepository, ITransactionRepository transactionRepository, IInvoiceRepository invoiceRepository, IInvoiceDetailRepository invoiceDetailRepository)
         {
             this.context = context;
             this.logger = logger;
@@ -46,12 +46,12 @@ namespace Infrastructure.Data
         {
             try
             {
-                logger.LogInformation($"Creating new database transaction\nTime: {DateTime.UtcNow}");
+                logger.LogInformation("Creating new database transaction\nTime: {Time}", DateTime.UtcNow);
                 transaction = await context.Database.BeginTransactionAsync();
             }
             catch (Exception ex)
             {
-                logger.LogError(ex, $"Error when starting new database transaction\nTime: {DateTime.UtcNow}");
+                logger.LogError(ex, "Error when starting new database transaction\nTime: {Time}", DateTime.UtcNow);
                 throw new Exception("Error when starting new database transaction");
             }
         }
@@ -60,12 +60,12 @@ namespace Infrastructure.Data
         {
             try
             {
-                logger.LogInformation($"Committing database transaction.\nTime: {DateTime.UtcNow}");
+                logger.LogInformation("Committing database transaction.\nTime: {Time}", DateTime.UtcNow);
                 await transaction!.CommitAsync();
             }
             catch (Exception ex)
             {
-                logger.LogError(ex, $"Error when trying to commit database transaction\nTime: {DateTime.UtcNow}");
+                logger.LogError(ex, "Error when trying to commit database transaction\nTime: {Time}", DateTime.UtcNow);
                 throw new Exception("Error when trying to commit database transaction");
             }
         }
@@ -82,7 +82,7 @@ namespace Infrastructure.Data
             }
             catch (Exception ex)
             {
-                logger.LogError(ex, $"Error when trying to dispose UnitOfWork\nTime: {DateTime.UtcNow}");
+                logger.LogError(ex, "Error when trying to dispose UnitOfWork\nTime: {Time}", DateTime.UtcNow);
             }
         }
 
@@ -90,12 +90,12 @@ namespace Infrastructure.Data
         {
             try
             {
-                logger.LogInformation($"Rollback database transaction.\nTime: {DateTime.UtcNow}");
+                logger.LogWarning("Rollback database transaction.\nTime: {Time}", DateTime.UtcNow);
                 await transaction!.RollbackAsync();
             }
             catch (Exception ex)
             {
-                logger.LogError(ex, $"Error when trying to rollback database transaction.\nTime: {DateTime.UtcNow}");
+                logger.LogError(ex, "Error when trying to rollback database transaction.\nTime: {Time}", DateTime.UtcNow);
                 throw new Exception("Error when trying to rollback database transaction");
             }
         }
@@ -104,12 +104,12 @@ namespace Infrastructure.Data
         {
             try
             {
-                logger.LogInformation($"Saving change(s) to database.\nTime: {DateTime.UtcNow}");
+                logger.LogInformation("Saving change(s) to database.\nTime: {Time}", DateTime.UtcNow);
                 return await context.SaveChangesAsync();
             }
             catch (Exception ex)
             {
-                logger.LogError(ex, $"Error when trying to save change(s) to database\nTime: {DateTime.UtcNow}");
+                logger.LogError(ex, "Error when trying to save change(s) to database\nTime: {Time}", DateTime.UtcNow);
                 throw new Exception("Error when trying to save change(s) to database");
             }
         }
@@ -129,6 +129,7 @@ namespace Infrastructure.Data
         public void Dispose()
         {
             Dispose(true);
+            GC.SuppressFinalize(this);
         }
     }
 }
