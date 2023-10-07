@@ -61,4 +61,11 @@
         Cancelled,
         Failed,
     }
+    public enum InvoiceStatus
+    {
+        Pending,
+        Paid,
+        Cancelled,
+        Failed
+    }
 }

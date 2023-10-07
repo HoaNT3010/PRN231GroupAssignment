@@ -1,6 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
 using Microsoft.EntityFrameworkCore;
+using Domain.Enums;
 
 namespace Domain.Entities
 {
@@ -14,7 +15,9 @@ namespace Domain.Entities
         [DataType(DataType.DateTime)]
         [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:yyyy-MM-dd HH:mm:ss}")]
         public DateTime CreateDate { get; set; }
-
+        [Column(TypeName = "nvarchar(200)")]
+        public string? Description { get; set; }
+        public InvoiceStatus Status { get; set; }
         public int CustomerId { get; set; }
         [ForeignKey(nameof(CustomerId))]
         public virtual Customer Customer { get; set; } = null!;
