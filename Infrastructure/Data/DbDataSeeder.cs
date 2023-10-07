@@ -313,6 +313,8 @@ namespace Infrastructure.Data
                     {
                         TotalPrice = 20000m,
                         CreateDate = DateTime.UtcNow.AddHours(2),
+                        Description = "Pay invoice with customer card",
+                        Status = InvoiceStatus.Paid,
                         CustomerId = 1,
                         StaffId = 3,
                     });
