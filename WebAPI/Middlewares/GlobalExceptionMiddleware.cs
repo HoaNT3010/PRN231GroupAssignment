@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Application.ErrorHandlers;
+using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using System.Net;
 
@@ -9,13 +10,6 @@ namespace WebAPI.Middlewares
     /// </summary>
     public class GlobalExceptionMiddleware : IMiddleware
     {
-        private readonly ILogger<GlobalExceptionMiddleware> logger;
-
-        public GlobalExceptionMiddleware(ILogger<GlobalExceptionMiddleware> logger)
-        {
-            this.logger = logger;
-        }
-
         public async Task InvokeAsync(HttpContext context, RequestDelegate next)
         {
             try
@@ -24,22 +18,43 @@ namespace WebAPI.Middlewares
             }
             catch (Exception e)
             {
-                // Log server exception
-                logger.LogError(e, e.Message);
-
-                // Update response
-                context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
-                ProblemDetails problem = new()
-                {
-                    Status = (int)HttpStatusCode.InternalServerError,
-                    Type = "Server error",
-                    Title = "Server error",
-                    Detail = "An internal server has ocurred",
-                };
-                string json = JsonConvert.SerializeObject(problem);
-                context.Response.ContentType = "application/json";
-                await context.Response.WriteAsync(json);
+                await HandleExceptionAsync(context, e);
             }
+        }
+
+        private static async Task HandleExceptionAsync(HttpContext context, Exception exception)
+        {
+            // Update response header
+            context.Response.ContentType = "application/json";
+            context.Response.StatusCode = GetStatusCode(exception);
+
+            // Update response message
+            ErrorDetail detail = new()
+            {
+                StatusCode = GetStatusCode(exception),
+                Title = GetTitle(exception),
+                Message = exception.Message
+            };
+            string json = JsonConvert.SerializeObject(detail);
+            await context.Response.WriteAsync(json);
+        }
+
+        private static int GetStatusCode(Exception exception)
+        {
+            if (exception is BaseException baseException)
+            {
+                return baseException.StatusCode;
+            }
+            return (int)HttpStatusCode.InternalServerError;
+        }
+
+        private static string GetTitle(Exception exception)
+        {
+            if (exception is BaseException baseException)
+            {
+                return baseException?.Title ?? "Internal server error";
+            }
+            return "Internal server error";
         }
     }
 }

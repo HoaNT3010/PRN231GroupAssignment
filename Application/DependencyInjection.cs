@@ -1,5 +1,8 @@
-﻿using FluentValidation;
+﻿using Application.Services.Implementations;
+using Application.Services.Interfaces;
+using FluentValidation;
 using Microsoft.Extensions.DependencyInjection;
+using SharpGrip.FluentValidation.AutoValidation.Mvc.Extensions;
 
 namespace Application
 {
@@ -11,10 +14,13 @@ namespace Application
 
             // Add validators
             services.AddValidatorsFromAssembly(assembly);
+            services.AddFluentValidationAutoValidation();
 
             // Add automapper profiles
 
             // Add services
+            services.AddScoped<IJwtService, JwtService>();
+            services.AddScoped<IStaffService, StaffService>();
 
             return services;
         }
