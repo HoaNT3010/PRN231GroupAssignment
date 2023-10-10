@@ -1,4 +1,8 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Application.DTOs.Request.Staff;
+using Application.DTOs.Response.Staff;
+using Application.ErrorHandlers;
+using Application.Services.Interfaces;
+using Microsoft.AspNetCore.Mvc;
 using System.Net;
 
 namespace WebAPI.Controllers
@@ -10,6 +14,16 @@ namespace WebAPI.Controllers
     [ApiController]
     public class AuthenticationController : ControllerBase
     {
+        private readonly ILogger<AuthenticationController> logger;
+        private readonly IStaffService staffService;
+
+        public AuthenticationController(ILogger<AuthenticationController> logger, IStaffService staffService)
+        {
+            this.logger = logger;
+            this.staffService = staffService;
+        }
+
+
         /// <summary>
         /// Log staff member into the system
         /// </summary>
@@ -17,11 +31,14 @@ namespace WebAPI.Controllers
         [HttpPost]
         [Route("login")]
         [Produces("application/json")]
-        [ProducesResponseType((int)HttpStatusCode.OK)]
-        [ProducesResponseType((int)HttpStatusCode.NotFound)]
-        public async Task<ActionResult> Login()
+        [ProducesResponseType((int)HttpStatusCode.OK, Type = typeof(StaffLoginResponse))]
+        [ProducesResponseType((int)HttpStatusCode.NotFound, Type = typeof(ErrorDetail))]
+        [ProducesResponseType((int)HttpStatusCode.BadRequest, Type = typeof(ErrorDetail))]
+        public async Task<ActionResult<StaffLoginResponse>> Login([FromBody] StaffLoginRequest loginRequest)
         {
-            return Ok();
+            logger.LogInformation("Staff logging in into Store Sale System");
+            var result = await staffService.Login(loginRequest);
+            return Ok(result);
         }
     }
 }

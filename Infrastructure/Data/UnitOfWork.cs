@@ -1,5 +1,4 @@
-﻿using Domain.Interfaces.Data;
-using Domain.Interfaces.Repositories;
+﻿using Infrastructure.Repositories.Interfaces;
 using Microsoft.EntityFrameworkCore.Storage;
 using Microsoft.Extensions.Logging;
 
