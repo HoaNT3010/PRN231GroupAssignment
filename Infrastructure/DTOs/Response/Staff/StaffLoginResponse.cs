@@ -1,4 +1,4 @@
-﻿namespace Application.DTOs.Response.Staff
+﻿namespace Infrastructure.DTOs.Response.Staff
 {
     public class StaffLoginResponse
     {
