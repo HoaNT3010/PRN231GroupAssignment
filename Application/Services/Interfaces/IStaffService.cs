@@ -1,5 +1,5 @@
-﻿using Application.DTOs.Request.Staff;
-using Application.DTOs.Response.Staff;
+﻿using Infrastructure.DTOs.Request.Staff;
+using Infrastructure.DTOs.Response.Staff;
 
 namespace Application.Services.Interfaces
 {

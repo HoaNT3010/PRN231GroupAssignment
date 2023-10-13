@@ -1,8 +1,8 @@
-﻿using Application.DTOs.Request.Staff;
+﻿using Infrastructure.DTOs.Request.Staff;
 using Infrastructure.Data;
 using Application.Services.Interfaces;
 using Microsoft.Extensions.Logging;
-using Application.DTOs.Response.Staff;
+using Infrastructure.DTOs.Response.Staff;
 using Application.ErrorHandlers;
 
 namespace Application.Services.Implementations
