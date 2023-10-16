@@ -1,6 +1,8 @@
-﻿namespace Infrastructure.Repositories.Interfaces
+﻿using Domain.Entities;
+
+namespace Infrastructure.Repositories.Interfaces
 {
-    public interface IInvoiceDetailRepository
+    public interface IInvoiceDetailRepository : IBaseRepository<InvoiceDetail>
     {
     }
 }

@@ -1,4 +1,4 @@
-﻿namespace Infrastructure.Common
+﻿namespace Infrastructure.Common.Parameters
 {
     public class QueryStringParameters
     {
@@ -14,7 +14,7 @@
             }
             set
             {
-                _pageSize = (value > MaxPageSize) ? MaxPageSize : value;
+                _pageSize = value > MaxPageSize ? MaxPageSize : value;
             }
         }
     }

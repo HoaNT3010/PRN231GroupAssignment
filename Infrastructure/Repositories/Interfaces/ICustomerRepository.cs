@@ -1,6 +1,8 @@
-﻿namespace Infrastructure.Repositories.Interfaces
+﻿using Domain.Entities;
+
+namespace Infrastructure.Repositories.Interfaces
 {
-    public interface ICustomerRepository
+    public interface ICustomerRepository : IBaseRepository<Customer>
     {
     }
 }
