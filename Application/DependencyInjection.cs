@@ -17,11 +17,13 @@ namespace Application
             services.AddFluentValidationAutoValidation();
 
             // Add automapper profiles
+            services.AddAutoMapper(assembly);
 
             // Add services
             services.AddScoped<IJwtService, JwtService>();
             services.AddScoped<IStaffService, StaffService>();
-
+            services.AddScoped<IInvoiceService, InvoiceService>();
+            
             return services;
         }
     }
