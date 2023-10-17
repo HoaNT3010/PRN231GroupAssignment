@@ -10,6 +10,12 @@ namespace WebAPI.Middlewares
     /// </summary>
     public class GlobalExceptionMiddleware : IMiddleware
     {
+        private readonly ILogger<GlobalExceptionMiddleware> logger;
+        public GlobalExceptionMiddleware(ILogger<GlobalExceptionMiddleware> logger)
+        {
+            this.logger = logger;
+        }
+
         public async Task InvokeAsync(HttpContext context, RequestDelegate next)
         {
             try
@@ -18,6 +24,7 @@ namespace WebAPI.Middlewares
             }
             catch (Exception e)
             {
+                logger.LogError(e.Message);
                 await HandleExceptionAsync(context, e);
             }
         }

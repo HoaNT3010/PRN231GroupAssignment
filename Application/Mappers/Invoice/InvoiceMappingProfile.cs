@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Infrastructure.Common;
 using Infrastructure.DTOs.Response.Invoice;
 using Infrastructure.DTOs.Response.InvoiceDetail;
 using Infrastructure.Utils;
@@ -15,6 +16,8 @@ namespace Application.Mappers.Invoice
                 src => src.MapFrom(src => DateTimeHelper.FormatDateTimeToDatetime(src.CreateDate)))
                 .ForMember(dest => dest.Status,
                 src => src.MapFrom(src => src.Status.ToString()));
+
+            CreateMap<PagedList<Domain.Entities.Invoice>, PagedList<InvoiceResponse>>();
             #endregion
 
             #region InvoiceDetail
