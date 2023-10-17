@@ -1,6 +1,7 @@
 ﻿using Application.ErrorHandlers;
 using Application.Services.Interfaces;
 using Domain.Enums;
+using Infrastructure.Common;
 using Infrastructure.Common.Parameters;
 using Infrastructure.DTOs.Response;
 using Infrastructure.DTOs.Response.Invoice;
@@ -38,7 +39,7 @@ namespace WebAPI.Controllers
         [ProducesResponseType((int)HttpStatusCode.BadRequest, Type = typeof(ErrorDetail))]
         public async Task<ActionResult<ResponseObject<InvoiceResponse>>> GetInvoiceById([FromRoute] int id)
         {
-            logger.LogInformation("Getting data of invoice with Id: {id}", id);
+            logger.LogInformation("Retrieving data of invoice with Id: {id}", id);
             var result = await invoiceService.GetInvoiceById(id);
 
             return Ok(new ResponseObject<InvoiceResponse>()
@@ -57,9 +58,17 @@ namespace WebAPI.Controllers
         [HttpGet]
         [Route("history")]
         [Produces("application/json")]
+        [ProducesResponseType((int)HttpStatusCode.OK, Type = typeof(ResponseObject<PagedList<InvoiceResponse>>))]
         public async Task<ActionResult> GetInvoiceList([FromQuery] InvoiceListParameters parameters)
         {
-            return NoContent();
+            logger.LogInformation("Retrieving data of invoices");
+            var result = await invoiceService.GetInvoiceList(parameters);
+            return Ok(new ResponseObject<PagedList<InvoiceResponse>>()
+            {
+                Status = ResponseStatus.Success.ToString(),
+                Message = string.Empty,
+                Data = result
+            });
         }
     }
 }

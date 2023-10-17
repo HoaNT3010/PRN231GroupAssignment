@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Serilog;
+using System.Text.Json.Serialization;
 using WebAPI.Middlewares;
 using WebAPI.OptionsSetup;
 
@@ -12,7 +13,12 @@ namespace WebAPI
             var assembly = typeof(DependencyInjection).Assembly;
 
             // Common setups
-            services.AddControllers();
+            services.AddControllers()
+                .AddJsonOptions(options =>
+                {
+                    //allow enum string value in swagger and front-end instead of int value
+                    options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+                });
             services.AddEndpointsApiExplorer();
             services.AddHttpContextAccessor();
 

@@ -1,6 +1,8 @@
 ﻿using Application.ErrorHandlers;
 using Application.Services.Interfaces;
 using AutoMapper;
+using Infrastructure.Common;
+using Infrastructure.Common.Parameters;
 using Infrastructure.Data;
 using Infrastructure.DTOs.Response.Invoice;
 using Microsoft.Extensions.Logging;
@@ -32,6 +34,16 @@ namespace Application.Services.Implementations
                 throw new NotFoundException("Cannot find invoice with Id");
             }
             return mapper.Map<InvoiceResponse>(invoice);
+        }
+
+        public async Task<PagedList<InvoiceResponse>> GetInvoiceList(InvoiceListParameters parameters)
+        {
+            var invoiceList = await unitOfWork.InvoiceRepository.GetInvoicesList(parameters);
+            if (invoiceList == null)
+            {
+                throw new NotFoundException("Cannot find invoices with given parameters");
+            }
+            return mapper.Map<PagedList<InvoiceResponse>>(invoiceList);
         }
     }
 }
