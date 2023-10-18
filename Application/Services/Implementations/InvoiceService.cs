@@ -4,6 +4,7 @@ using AutoMapper;
 using Infrastructure.Common;
 using Infrastructure.Common.Parameters;
 using Infrastructure.Data;
+using Infrastructure.DTOs.Request.Invoice;
 using Infrastructure.DTOs.Response.Invoice;
 using Microsoft.Extensions.Logging;
 
@@ -14,12 +15,20 @@ namespace Application.Services.Implementations
         private readonly IUnitOfWork unitOfWork;
         private readonly ILogger<InvoiceService> logger;
         private readonly IMapper mapper;
+        private readonly IStaffService staffService;
 
-        public InvoiceService(IUnitOfWork unitOfWork, ILogger<InvoiceService> logger, IMapper mapper)
+        public InvoiceService(IUnitOfWork unitOfWork, ILogger<InvoiceService> logger, IMapper mapper, IStaffService staffService)
         {
             this.unitOfWork = unitOfWork;
             this.logger = logger;
             this.mapper = mapper;
+            this.staffService = staffService;
+        }
+
+        public async Task<InvoiceResponse> CreateInvoice(InvoiceCreateRequest request)
+        {
+            var currentStaff = await staffService.GetCurrentStaff();
+            throw new NotImplementedException();
         }
 
         public async Task<InvoiceResponse> GetInvoiceById(int id)

@@ -3,10 +3,13 @@ using Application.Services.Interfaces;
 using Domain.Enums;
 using Infrastructure.Common;
 using Infrastructure.Common.Parameters;
+using Infrastructure.DTOs.Request.Invoice;
 using Infrastructure.DTOs.Response;
 using Infrastructure.DTOs.Response.Invoice;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
+using WebAPI.OptionsSetup;
 
 namespace WebAPI.Controllers
 {
@@ -69,6 +72,15 @@ namespace WebAPI.Controllers
                 Message = string.Empty,
                 Data = result
             });
+        }
+
+        [HttpPost]
+        [Route("create")]
+        [Produces("application/json")]
+        public async Task<ActionResult> CreateInvoice([FromBody] InvoiceCreateRequest request)
+        {
+            var result = await invoiceService.CreateInvoice(request);
+            return NoContent();
         }
     }
 }
