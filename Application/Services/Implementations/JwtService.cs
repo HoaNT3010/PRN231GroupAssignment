@@ -22,8 +22,8 @@ namespace Application.Services.Implementations
         {
             var claims = new Claim[]
             {
-                new Claim("Id", staff.Id.ToString()),
-                new Claim("Role", staff.Role.ToString())
+                new Claim("id", staff.Id.ToString()),
+                new Claim("role", staff.Role.ToString())
             };
 
             var signingCredentials = new SigningCredentials(
@@ -49,8 +49,8 @@ namespace Application.Services.Implementations
         {
             var claims = new Claim[]
             {
-                new Claim("Id", staff.Id.ToString()),
-                new Claim("Role", staff.Role.ToString())
+                new Claim("id", staff.Id.ToString()),
+                new Claim("role", staff.Role.ToString())
             };
 
             var signingCredentials = new SigningCredentials(

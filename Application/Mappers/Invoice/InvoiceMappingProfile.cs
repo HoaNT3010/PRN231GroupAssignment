@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Infrastructure.Common;
+using Infrastructure.DTOs.Request.Invoice;
 using Infrastructure.DTOs.Response.Invoice;
 using Infrastructure.DTOs.Response.InvoiceDetail;
 using Infrastructure.Utils;
@@ -22,6 +23,7 @@ namespace Application.Mappers.Invoice
 
             #region InvoiceDetail
             CreateMap<Domain.Entities.InvoiceDetail, InvoiceDetailResponse>();
+            CreateMap<InvoiceDetailCreateRequest, Domain.Entities.InvoiceDetail>();
             #endregion
         }
     }
