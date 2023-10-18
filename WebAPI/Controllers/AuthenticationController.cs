@@ -43,7 +43,7 @@ namespace WebAPI.Controllers
             return Ok(new ResponseObject<StaffLoginResponse>()
             {
                 Status = ResponseStatus.Success.ToString(),
-                Message = string.Empty,
+                Message = "Staff successfully logged-in",
                 Data = result,
             });
         }
