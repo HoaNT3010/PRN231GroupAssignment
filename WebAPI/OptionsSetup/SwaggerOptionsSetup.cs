@@ -10,8 +10,8 @@ namespace WebAPI.OptionsSetup
     {
         private const string ApiVersion = "v1";
         private const string ApiTilte = "Store Sale System API";
-        private const string SecurityDefinitionName = "Bearer";
-        private const string SecurityScheme = "Bearer";
+        private const string SecurityDefinitionName = "bearer";
+        private const string SecurityScheme = "bearer";
         private const string SecuritySchemeName = "Authorization";
         private const string SecuritySchemeDescription = "Enter valid Jwt access token";
         private const string SecuritySchemeBearerFormat = "JWT";
@@ -45,13 +45,13 @@ namespace WebAPI.OptionsSetup
                         {
                             Type = ReferenceType.SecurityScheme,
                             Id = SecurityScheme
-                        },
+                        }
                     },
-                    new List<string>()
+                    new string[] {}
                 }
             });
             // Apply security requirements globally
-            options.OperationFilter<SecurityRequirementsOperationFilter>();
+            //options.OperationFilter<SecurityRequirementsOperationFilter>();
             // Set comments path
             var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
             var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);

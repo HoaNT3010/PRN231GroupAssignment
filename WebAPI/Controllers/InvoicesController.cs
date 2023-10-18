@@ -60,6 +60,7 @@ namespace WebAPI.Controllers
         /// <returns></returns>
         [HttpGet]
         [Route("history")]
+        [Authorize(Policy = IdentityData.ManagerPolicyName)]
         [Produces("application/json")]
         [ProducesResponseType((int)HttpStatusCode.OK, Type = typeof(ResponseObject<PagedList<InvoiceResponse>>))]
         public async Task<ActionResult> GetInvoiceList([FromQuery] InvoiceListParameters parameters)
@@ -74,13 +75,21 @@ namespace WebAPI.Controllers
             });
         }
 
+        /// <summary>
+        /// Create an invoice for customer purchasing order. Return a pending invoice for payment processing.
+        /// </summary>
+        /// <param name="request"></param>
+        /// <returns></returns>
         [HttpPost]
         [Route("create")]
+        [Authorize]
         [Produces("application/json")]
-        public async Task<ActionResult> CreateInvoice([FromBody] InvoiceCreateRequest request)
+        [ProducesResponseType((int)HttpStatusCode.OK, Type = typeof(ResponseObject<InvoiceResponse>))]
+        public async Task<ActionResult<ResponseObject<InvoiceResponse>>> CreateInvoice([FromBody] InvoiceCreateRequest request)
         {
+            logger.LogInformation("Creating order invoice with {itemCount} item(s)", request.Products.Count);
             var result = await invoiceService.CreateInvoice(request);
-            return NoContent();
+            return Ok(result);
         }
     }
 }

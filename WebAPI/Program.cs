@@ -36,6 +36,8 @@ using (var scope = app.Services.CreateScope())
     DbDataSeeder.SeedData(context);
 }
 
+app.UseCors("PublicPolicy");
+
 app.UseSerilogRequestLogging();
 
 app.UseHttpsRedirection();

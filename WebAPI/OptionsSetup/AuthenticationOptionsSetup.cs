@@ -4,9 +4,16 @@ using Microsoft.Extensions.Options;
 
 namespace WebAPI.OptionsSetup
 {
-    public class AuthenticationOptionsSetup : IConfigureOptions<AuthenticationOptions>
+    public class AuthenticationOptionsSetup : IConfigureNamedOptions<AuthenticationOptions>
     {
         public void Configure(AuthenticationOptions options)
+        {
+            options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+            options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+            options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+        }
+
+        public void Configure(string? name, AuthenticationOptions options)
         {
             options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
             options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
