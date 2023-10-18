@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Serilog;
+﻿using Serilog;
 using System.Text.Json.Serialization;
 using WebAPI.Middlewares;
 using WebAPI.OptionsSetup;
@@ -38,9 +37,9 @@ namespace WebAPI
                 );
             });
 
-            // Configuring JWT
-            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-                .AddJwtBearer();
+            // Configuring JWT and Authentication
+            services.AddAuthentication().AddJwtBearer();
+            services.ConfigureOptions<AuthenticationOptionsSetup>();
             services.ConfigureOptions<JwtOptionsSetup>();
             services.ConfigureOptions<JwtBearerOptionsSetup>();
 

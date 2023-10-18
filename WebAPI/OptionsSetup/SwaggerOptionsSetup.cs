@@ -14,7 +14,7 @@ namespace WebAPI.OptionsSetup
         private const string SecurityScheme = "Bearer";
         private const string SecuritySchemeName = "Authorization";
         private const string SecuritySchemeDescription = "Enter valid Jwt access token";
-        private const string SecuritySchemeBearerFormat = "Jwt";
+        private const string SecuritySchemeBearerFormat = "JWT";
 
         public void Configure(SwaggerGenOptions options)
         {
@@ -25,7 +25,7 @@ namespace WebAPI.OptionsSetup
                 Title = ApiTilte,
 
             });
-            // Security scheme
+            // Security scheme definition
             options.AddSecurityDefinition(SecurityDefinitionName, new OpenApiSecurityScheme
             {
                 Description = SecuritySchemeDescription,
@@ -45,9 +45,9 @@ namespace WebAPI.OptionsSetup
                         {
                             Type = ReferenceType.SecurityScheme,
                             Id = SecurityScheme
-                        }
+                        },
                     },
-                    Array.Empty<string>()
+                    new List<string>()
                 }
             });
             // Apply security requirements globally
