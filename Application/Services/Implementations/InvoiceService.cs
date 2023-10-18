@@ -70,7 +70,7 @@ namespace Application.Services.Implementations
             var invoice = await unitOfWork.InvoiceRepository.GetInvoiceWithDetails(id);
             if (invoice == null)
             {
-                throw new NotFoundException("Cannot find invoice with Id");
+                throw new NotFoundException($"Cannot find invoice with Id: {id}");
             }
             return mapper.Map<InvoiceResponse>(invoice);
         }
@@ -83,6 +83,27 @@ namespace Application.Services.Implementations
                 throw new NotFoundException("Cannot find invoices with given parameters");
             }
             return mapper.Map<PagedList<InvoiceResponse>>(invoiceList);
+        }
+
+        public async Task<InvoiceResponse> CancelInvoice(int id)
+        {
+            if (id <= 0)
+            {
+                throw new BadRequestException("Invalid invoice Id");
+            }
+            var invoice = await unitOfWork.InvoiceRepository.GetByIdAsync(id);
+            if (invoice == null)
+            {
+                throw new NotFoundException($"Cannot find invoice with Id: {id}");
+            }
+            if (invoice.Status != Domain.Enums.InvoiceStatus.Pending)
+            {
+                throw new BadRequestException("Only pending invoice can be cancelled");
+            }
+            invoice.Status = Domain.Enums.InvoiceStatus.Cancelled;
+            unitOfWork.InvoiceRepository.UpdateAsync(invoice);
+            await unitOfWork.SaveChangeAsync();
+            return mapper.Map<InvoiceResponse>(invoice);
         }
 
         private async Task<List<InvoiceDetail>> GenerateInvoiceDetails(InvoiceCreateRequest request)

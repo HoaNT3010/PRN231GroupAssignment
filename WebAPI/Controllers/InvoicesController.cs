@@ -48,7 +48,7 @@ namespace WebAPI.Controllers
             return Ok(new ResponseObject<InvoiceResponse>()
             {
                 Status = ResponseStatus.Success.ToString(),
-                Message = string.Empty,
+                Message = $"Successfully retrieve data of invoice with Id: {id}",
                 Data = result
             });
         }
@@ -70,7 +70,7 @@ namespace WebAPI.Controllers
             return Ok(new ResponseObject<PagedList<InvoiceResponse>>()
             {
                 Status = ResponseStatus.Success.ToString(),
-                Message = string.Empty,
+                Message = "Successfully retrieved paginated list of invoices",
                 Data = result
             });
         }
@@ -89,7 +89,34 @@ namespace WebAPI.Controllers
         {
             logger.LogInformation("Creating order invoice with {itemCount} item(s)", request.Products.Count);
             var result = await invoiceService.CreateInvoice(request);
-            return Ok(result);
+            return Ok(new ResponseObject<InvoiceResponse>()
+            {
+                Status = ResponseStatus.Success.ToString(),
+                Message = $"Successfully create new pending invoice with Id: {result.Id}",
+                Data = result
+            });
+        }
+
+        /// <summary>
+        /// Cancel a pending invoice (change status from pending to cancel) when customer does not pay for the order.
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        [HttpPut]
+        [Authorize]
+        [Route("cancel/{id}")]
+        [Produces("application/json")]
+        [ProducesResponseType((int)HttpStatusCode.OK, Type = typeof(ResponseObject<InvoiceResponse>))]
+        public async Task<ActionResult<ResponseObject<InvoiceResponse>>> CancelInvoice([FromRoute] int id)
+        {
+            logger.LogInformation("Cancelling an invoice with Id: {id}", id);
+            var result = await invoiceService.CancelInvoice(id);
+            return Ok(new ResponseObject<InvoiceResponse>()
+            {
+                Status = ResponseStatus.Success.ToString(),
+                Message = $"Invoice [Id: {id}] has been cancelled",
+                Data = result
+            });
         }
     }
 }
