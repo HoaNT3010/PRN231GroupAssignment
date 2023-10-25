@@ -123,7 +123,7 @@ namespace Infrastructure.Migrations
                     b.Property<DateTime>("CreateDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("CustomerId")
+                    b.Property<int?>("CustomerId")
                         .HasColumnType("int");
 
                     b.Property<string>("Description")
@@ -343,6 +343,12 @@ namespace Infrastructure.Migrations
                     b.Property<DateTime>("CreateDate")
                         .HasColumnType("datetime2");
 
+                    b.Property<bool>("IsDefaultWallet")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(200)");
+
                     b.Property<int>("Status")
                         .HasColumnType("int");
 
@@ -368,9 +374,7 @@ namespace Infrastructure.Migrations
                 {
                     b.HasOne("Domain.Entities.Customer", "Customer")
                         .WithMany("Invoices")
-                        .HasForeignKey("CustomerId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("CustomerId");
 
                     b.HasOne("Domain.Entities.Staff", "Staff")
                         .WithMany("Invoices")

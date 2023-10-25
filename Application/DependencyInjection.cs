@@ -19,14 +19,14 @@ namespace Application
             services.AddControllers().AddJsonOptions(x =>
                 x.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles);
             // Add automapper profiles
+            services.AddAutoMapper(assembly);
 
             // Add services
             services.AddScoped<IJwtService, JwtService>();
             services.AddScoped<IStaffService, StaffService>();
             services.AddScoped<ICustomerServices, CustomerServices>();
-
-
-            return services;
+            services.AddScoped<IInvoiceService, InvoiceService>();
+            services.AddScoped<IWalletService, WalletService>();
         }
     }
 }

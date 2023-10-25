@@ -3,6 +3,7 @@ using Infrastructure.Repositories.Interfaces;
 using Infrastructure.Data;
 using Infrastructure.DTOs.Request.Card;
 using Domain.Enums;
+using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure.Repositories.Implementations
 {
@@ -22,6 +23,11 @@ namespace Infrastructure.Repositories.Implementations
             };
             await AddAsync(newcard);
             return newcard;
+            
+        public async Task<Card?> GetCardWithWallets(int id)
+        {
+            return await dbSet.Include(c => c.Wallets)
+                .FirstOrDefaultAsync(c => c.Id == id);
         }
     }
 }

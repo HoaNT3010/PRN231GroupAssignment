@@ -2,7 +2,7 @@
 
 namespace Infrastructure.Repositories.Interfaces
 {
-    public interface IWalletRepository
+    public interface IWalletRepository : IBaseRepository<Wallet>
     {
         public Task<Wallet> AddnewWallet(int cardId);
 

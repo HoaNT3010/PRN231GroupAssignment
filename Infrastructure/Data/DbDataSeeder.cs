@@ -293,6 +293,8 @@ namespace Infrastructure.Data
                         CreateDate = DateTime.UtcNow,
                         Status = WalletStatus.Active,
                         CardId = 1,
+                        IsDefaultWallet = true,
+                        Name = "Card's default wallet",
                     },
                     new Wallet()
                     {
@@ -300,6 +302,8 @@ namespace Infrastructure.Data
                         CreateDate = DateTime.UtcNow,
                         Status = WalletStatus.Active,
                         CardId = 2,
+                        IsDefaultWallet = true,
+                        Name = "Card's default wallet",
                     });
             }
             context.SaveChanges();

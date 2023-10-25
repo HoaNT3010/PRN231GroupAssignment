@@ -4,7 +4,7 @@ using Infrastructure.DTOs.Request.Customer;
 
 namespace Infrastructure.Repositories.Interfaces
 {
-    public interface ICustomerRepository
+    public interface ICustomerRepository : IBaseRepository<Customer>
     {
         public Task<Customer> AddNewCustomer(CustomerRequest CustomerCreate);
 

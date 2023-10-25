@@ -6,7 +6,7 @@ using System.Text;
 
 namespace WebAPI.OptionsSetup
 {
-    public class JwtBearerOptionsSetup : IConfigureOptions<JwtBearerOptions>
+    public class JwtBearerOptionsSetup : IConfigureNamedOptions<JwtBearerOptions>
     {
         private readonly JwtOptions jwtOptions;
 
@@ -15,9 +15,9 @@ namespace WebAPI.OptionsSetup
             this.jwtOptions = jwtOptions.Value;
         }
 
-        public void Configure(JwtBearerOptions options)
+        public void Configure(string? name, JwtBearerOptions options)
         {
-            options.TokenValidationParameters = new()
+            options.TokenValidationParameters = new TokenValidationParameters()
             {
                 ValidateIssuer = true,
                 ValidateAudience = true,
@@ -25,7 +25,23 @@ namespace WebAPI.OptionsSetup
                 ValidateIssuerSigningKey = true,
                 ValidIssuer = jwtOptions.Issuer,
                 ValidAudience = jwtOptions.Audience,
-                IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtOptions.SecretKey))
+                IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtOptions.SecretKey)),
+                ClockSkew = TimeSpan.Zero
+            };
+        }
+
+        public void Configure(JwtBearerOptions options)
+        {
+            options.TokenValidationParameters = new TokenValidationParameters()
+            {
+                ValidateIssuer = true,
+                ValidateAudience = true,
+                ValidateLifetime = true,
+                ValidateIssuerSigningKey = true,
+                ValidIssuer = jwtOptions.Issuer,
+                ValidAudience = jwtOptions.Audience,
+                IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtOptions.SecretKey)),
+                ClockSkew = TimeSpan.Zero
             };
         }
     }

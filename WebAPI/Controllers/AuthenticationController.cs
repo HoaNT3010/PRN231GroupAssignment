@@ -4,6 +4,8 @@ using Application.ErrorHandlers;
 using Application.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
+using Infrastructure.DTOs.Response;
+using Domain.Enums;
 
 namespace WebAPI.Controllers
 {
@@ -31,14 +33,19 @@ namespace WebAPI.Controllers
         [HttpPost]
         [Route("login")]
         [Produces("application/json")]
-        [ProducesResponseType((int)HttpStatusCode.OK, Type = typeof(StaffLoginResponse))]
+        [ProducesResponseType((int)HttpStatusCode.OK, Type = typeof(ResponseObject<StaffLoginResponse>))]
         [ProducesResponseType((int)HttpStatusCode.NotFound, Type = typeof(ErrorDetail))]
         [ProducesResponseType((int)HttpStatusCode.BadRequest, Type = typeof(ErrorDetail))]
-        public async Task<ActionResult<StaffLoginResponse>> Login([FromBody] StaffLoginRequest loginRequest)
+        public async Task<ActionResult<ResponseObject<StaffLoginResponse>>> Login([FromBody] StaffLoginRequest loginRequest)
         {
             logger.LogInformation("Staff logging in into Store Sale System");
             var result = await staffService.Login(loginRequest);
-            return Ok(result);
+            return Ok(new ResponseObject<StaffLoginResponse>()
+            {
+                Status = ResponseStatus.Success.ToString(),
+                Message = "Staff successfully logged-in",
+                Data = result,
+            });
         }
     }
 }

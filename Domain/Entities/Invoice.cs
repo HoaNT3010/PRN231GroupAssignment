@@ -18,9 +18,9 @@ namespace Domain.Entities
         [Column(TypeName = "nvarchar(200)")]
         public string? Description { get; set; }
         public InvoiceStatus Status { get; set; }
-        public int CustomerId { get; set; }
+        public int? CustomerId { get; set; }
         [ForeignKey(nameof(CustomerId))]
-        public virtual Customer Customer { get; set; } = null!;
+        public virtual Customer? Customer { get; set; } = null!;
         public int StaffId { get; set; }
         [ForeignKey(nameof(StaffId))]
         public virtual Staff Staff { get; set; } = null!;
