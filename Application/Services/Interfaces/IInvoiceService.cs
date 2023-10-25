@@ -11,5 +11,6 @@ namespace Application.Services.Interfaces
         Task<PagedList<InvoiceResponse>> GetInvoiceList(InvoiceListParameters parameters);
         Task<InvoiceResponse> CreateInvoice(InvoiceCreateRequest request);
         Task<InvoiceResponse> CancelInvoice(int id);
+        Task<InvoiceCheckoutReponse> CheckoutInvoiceDefaultWallet(int id, InvoiceCheckoutRequest request);
     }
 }
