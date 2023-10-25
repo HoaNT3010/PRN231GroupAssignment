@@ -23,6 +23,7 @@ namespace Application
             services.AddScoped<IJwtService, JwtService>();
             services.AddScoped<IStaffService, StaffService>();
             services.AddScoped<IInvoiceService, InvoiceService>();
+            services.AddScoped<IWalletService, WalletService>();
             
             return services;
         }
