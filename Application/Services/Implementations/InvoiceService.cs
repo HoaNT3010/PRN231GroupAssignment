@@ -133,11 +133,7 @@ namespace Application.Services.Implementations
             // Retrieving and validate customer's card and card's wallet
             var card = await GetCustomerCard(request.CustomerCardId);
             // Default wallet is the oldest wallet
-            var defaultWallet = card!.Wallets.FirstOrDefault();
-            if (defaultWallet!.Status != WalletStatus.Active)
-            {
-                throw new BadRequestException($"Card's default wallet is currently inactive. Only active wallet can be used to process transaction");
-            }
+            var defaultWallet = GetAndValidateCardDefaultWallet(card!);
             if (defaultWallet!.Balance < invoice.TotalPrice)
             {
                 throw new BadRequestException($"Insufficient wallet's balance. " +
@@ -240,8 +236,21 @@ namespace Application.Services.Implementations
             {
                 throw new NotFoundException($"Card with Id: {cardId} does not contained any wallet");
             }
-            card.Wallets.OrderBy(w => w.CreateDate);
             return card;
+        }
+        private Wallet GetAndValidateCardDefaultWallet(Card card)
+        {
+            var defaultWallet = card.Wallets!.Where(w => w.IsDefaultWallet)
+                .FirstOrDefault();
+            if (defaultWallet == null)
+            {
+                throw new NotFoundException($"Card [Id: {card.Id}] does not have a default wallet");
+            }
+            if (defaultWallet!.Status != WalletStatus.Active)
+            {
+                throw new BadRequestException($"Card's default wallet is currently inactive. Only active wallet can be used to process transaction");
+            }
+            return defaultWallet;
         }
         private Transaction GenerateInvoiceCheckoutTransaction(Invoice invoice, string? description, int walletId, int staffId)
         {
