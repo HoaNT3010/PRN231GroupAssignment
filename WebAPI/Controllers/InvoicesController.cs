@@ -32,7 +32,7 @@ namespace WebAPI.Controllers
         /// <summary>
         /// Get detail information of an invoice by invoice Id
         /// </summary>
-        /// <param name="id"></param>
+        /// <param name="id">Id of invoice</param>
         /// <returns></returns>
         [HttpGet]
         [Route("history/{id}")]
@@ -56,7 +56,7 @@ namespace WebAPI.Controllers
         /// <summary>
         /// Get paginated list of invoices with filters (duration, status,...) and sorting
         /// </summary>
-        /// <param name="parameters"></param>
+        /// <param name="parameters">Parameters for filtering and sorting the invoice list</param>
         /// <returns></returns>
         [HttpGet]
         [Route("history")]
@@ -78,7 +78,7 @@ namespace WebAPI.Controllers
         /// <summary>
         /// Create an invoice for customer purchasing order. Return a pending invoice for payment processing.
         /// </summary>
-        /// <param name="request"></param>
+        /// <param name="request">Data for creating new invoice</param>
         /// <returns></returns>
         [HttpPost]
         [Route("create")]
@@ -98,9 +98,9 @@ namespace WebAPI.Controllers
         }
 
         /// <summary>
-        /// Cancel a pending invoice (change status from pending to cancel) when customer does not pay for the order.
+        /// Cancel a pending invoice (change status from pending to cancelled) when customer does not pay for the order.
         /// </summary>
-        /// <param name="id"></param>
+        /// <param name="id">Id of invoice</param>
         /// <returns></returns>
         [HttpPut]
         [Authorize]
@@ -115,6 +115,29 @@ namespace WebAPI.Controllers
             {
                 Status = ResponseStatus.Success.ToString(),
                 Message = $"Invoice [Id: {id}] has been cancelled",
+                Data = result
+            });
+        }
+
+        /// <summary>
+        /// Process customer's order invoice checkout with customer's card and default card's wallet.
+        /// </summary>
+        /// <param name="id">Id of order's invoice</param>
+        /// <param name="request">Information of customer's card</param>
+        /// <returns></returns>
+        [HttpPost]
+        [Authorize]
+        [Route("checkout/{id}/default")]
+        [Produces("application/json")]
+        [ProducesResponseType((int)HttpStatusCode.OK, Type = typeof(ResponseObject<InvoiceCheckoutReponse>))]
+        public async Task<ActionResult<InvoiceCheckoutReponse>> CheckoutInvoiceDefaultWallet([FromRoute] int id, [FromBody] InvoiceCheckoutRequest request)
+        {
+            logger.LogInformation("Customer checkout with default card's wallet for invoice with Id: {id}", id);
+            var result = await invoiceService.CheckoutInvoiceDefaultWallet(id, request);
+            return Ok(new ResponseObject<InvoiceCheckoutReponse>()
+            {
+                Status = ResponseStatus.Success.ToString(),
+                Message = $"Invoice [Id: {id}] has been checked-out",
                 Data = result
             });
         }
