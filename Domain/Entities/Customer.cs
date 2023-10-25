@@ -6,6 +6,9 @@ namespace Domain.Entities
 {
     public class Customer
     {
+        public Customer() 
+        { 
+        }
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }

@@ -2,6 +2,10 @@
 using Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
+using Microsoft.Extensions.Options;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Linq.Expressions;
 
 namespace Infrastructure.Repositories.Implementations
 {
@@ -19,6 +23,7 @@ namespace Infrastructure.Repositories.Implementations
         public async Task AddAsync(T entity)
         {
             await dbSet.AddAsync(entity);
+            await context.SaveChangesAsync();
         }
 
         public async Task AddManyAsync(IEnumerable<T> entities)
@@ -34,31 +39,71 @@ namespace Infrastructure.Repositories.Implementations
 
         public async Task DeleteByAsync(object id)
         {
-            var entity = await GetByIdAsync(id);
+            var entity = await dbSet.FindAsync(id);
             if (entity != null)
             {
                 dbSet.Remove(entity);
+                await context.SaveChangesAsync();
             }
         }
 
         public async Task<bool> ExistByIdAsync(object id)
         {
-            return await GetByIdAsync(id) != null;
+            return await dbSet.FindAsync(id) != null;
         }
 
-        public async Task<IEnumerable<T>> GetAllAsync()
+        public async Task<ICollection<T>> GetAllAsync(Func<IQueryable<T>, ICollection<T>> options = null, string includeProperties = null)
         {
-            return await dbSet.ToListAsync();
+            try
+            {
+                IQueryable<T> query = dbSet;
+
+                if (includeProperties != null)
+                {
+                    foreach (var includeProp in includeProperties.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries))
+                    {
+                        query = query.Include(includeProp);
+                    }
+                }
+
+                if (options != null)
+                {
+                    return options(query).ToList();
+                }
+
+                return await query.ToListAsync();
+            }
+            catch
+            {
+                Console.WriteLine("Error");
+            }
+            return null;
         }
 
-        public async Task<T?> GetByIdAsync(object id)
+        public async Task<T?> GetByIdAsync(Expression<Func<T, bool>> filter = null, string includeProperties = null)
         {
-            return await dbSet.FindAsync(id);
+            IQueryable<T> query = dbSet;
+            if (filter != null)
+            {
+                query = query.Where(filter);
+            }
+
+            if (includeProperties != null)
+            {
+                foreach (var includeProp in includeProperties.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries))
+                {
+                    query = query.Include(includeProp);
+                }
+            }
+
+            return await query.FirstOrDefaultAsync();
         }
 
-        public void UpdateAsync(T entity)
+        public Task UpdateAsync(T entity)
         {
             dbSet.Update(entity);
+           return context.SaveChangesAsync();
+
         }
     }
 }
