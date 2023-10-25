@@ -82,7 +82,7 @@ namespace Infrastructure.Repositories.Implementations
             if (statusFilter != null)
             {
                 combinedExpression = combinedExpression != null
-                    ? Expression.AndAlso(combinedExpression, statusFilter.Body)
+                    ? Expression.AndAlso(combinedExpression, Expression.Invoke(statusFilter, parameter))
                     : Expression.Invoke(statusFilter, parameter);
             }
             return Expression.Lambda<Func<Invoice, bool>>(combinedExpression!, parameter);
