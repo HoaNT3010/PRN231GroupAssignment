@@ -11,6 +11,50 @@ namespace Infrastructure.Repositories.Implementations
         {
         }
 
+        public async Task CreateStaff(Staff newStaff)
+        {
+             await AddAsync(newStaff);
+                }
+
+        public async Task DeleteStaff(int id)
+        {
+            Staff s = await GetByIdAsync(id);
+            if (s != null) {
+                s.Status = false;
+            }
+                }
+
+        public async Task<IEnumerable<Staff>> GetAll()
+        {
+            return await GetAllAsync();        }
+
+        public async Task<IEnumerable<Staff>> GetAllByName(string name)
+        {
+            List<Staff> list = new List<Staff>();
+            List<Staff> listAll= (List<Staff>)await GetAllAsync();
+            if(listAll.Count > 0)
+            {
+                foreach (Staff s in listAll)
+                {
+                    if (s.FirstName.ToLower().Contains(name.ToLower()) || s.LastName.ToLower().Contains(name.ToLower()))
+                    {
+                        list.Add(s);
+                    }
+                }
+            }
+            return list;
+        }
+
+        public Task<Staff> GetByEmail(string email)
+        {
+            return dbSet.FirstOrDefaultAsync(x => x.Email == email);
+        }
+
+        public async Task<Staff> GetById(int id)
+        {
+            return await GetByIdAsync(id);
+        }
+
         public async Task<Staff?> GetByUsername(string username)
         {
             return await dbSet.FirstOrDefaultAsync(s => s.Username.ToLower() == username.Trim().ToLower());
@@ -28,6 +72,11 @@ namespace Infrastructure.Repositories.Implementations
                 return null;
             }
             return staff;
+        }
+
+        public void UpdateStaff(Staff newStaff)
+        {
+           UpdateAsync(newStaff);
         }
     }
 }
