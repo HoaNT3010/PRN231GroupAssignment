@@ -21,6 +21,7 @@ namespace Infrastructure.Repositories.Implementations
         public async Task AddAsync(T entity)
         {
             await dbSet.AddAsync(entity);
+           
         }
 
         public async Task AddManyAsync(IEnumerable<T> entities)
