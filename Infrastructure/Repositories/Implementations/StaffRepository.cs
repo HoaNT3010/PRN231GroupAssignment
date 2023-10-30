@@ -20,7 +20,7 @@ namespace Infrastructure.Repositories.Implementations
         {
             Staff s = await GetByIdAsync(id);
             if (s != null) {
-                s.Status = false;
+                s.Status = 0;
             }
                 }
 
