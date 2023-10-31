@@ -1,5 +1,6 @@
 ﻿using Application.Services.Interfaces;
 using Domain.Entities;
+using Infrastructure.DTOs.Request.Staff;
 using Microsoft.AspNetCore.Mvc;
 
 namespace WebAPI.Controllers
@@ -146,6 +147,13 @@ namespace WebAPI.Controllers
                 return BadRequest();
             }
 
+        }
+
+        [HttpPost]
+        [Route("create")]
+        public async Task<ActionResult> CreateStaff([FromBody] StaffCreateRequest createRequest)
+        {
+            return Ok();
         }
     }
 }
