@@ -1,6 +1,8 @@
 ﻿using Domain.Entities;
 using Infrastructure.Repositories.Interfaces;
 using Infrastructure.Data;
+using Infrastructure.Common.Parameters;
+using Infrastructure.Common;
 
 namespace Infrastructure.Repositories.Implementations
 {
@@ -8,6 +10,10 @@ namespace Infrastructure.Repositories.Implementations
     {
         public CategoryRepository(StoreDbContext context) : base(context)
         {
+        }
+        public async Task<PagedList<Category>> GetCategorList(QueryStringParameters parameters)
+        {
+            return await GetPaginatedAsync(parameters.PageSize, parameters.PageNumber);
         }
     }
 }
