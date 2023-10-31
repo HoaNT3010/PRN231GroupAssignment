@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.AspNetCore.Http;
 using System.Security.Claims;
+using AutoMapper;
 
 namespace Application.Services.Implementations
 {
@@ -20,13 +21,15 @@ namespace Application.Services.Implementations
         private readonly ILogger<StaffService> logger;
         private readonly IJwtService jwtService;
         private readonly IHttpContextAccessor contextAccessor;
+        private readonly IMapper mapper;
 
-        public StaffService(IUnitOfWork unitOfWork, ILogger<StaffService> logger, IJwtService jwtService, IHttpContextAccessor contextAccessor)
+        public StaffService(IUnitOfWork unitOfWork, ILogger<StaffService> logger, IJwtService jwtService, IHttpContextAccessor contextAccessor, IMapper mapper)
         {
             this.unitOfWork = unitOfWork;
             this.logger = logger;
             this.jwtService = jwtService;
             this.contextAccessor = contextAccessor;
+            this.mapper = mapper;
         }
 
         public async Task<Staff?> GetCurrentStaff()
