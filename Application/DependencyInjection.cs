@@ -18,6 +18,7 @@ namespace Application
             services.AddFluentValidationAutoValidation();
             services.AddControllers().AddJsonOptions(x =>
               x.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles);
+
             // Add automapper profiles
             services.AddAutoMapper(assembly);
 
@@ -27,7 +28,8 @@ namespace Application
             services.AddScoped<IInvoiceService, InvoiceService>();
             services.AddScoped<IWalletService, WalletService>();
             services.AddScoped<ICustomerServices, CustomerServices>();
-
+            services.AddScoped<ICategoryService, CategoryService>();
+            services.AddScoped<IProductService, ProductService>();
 
             return services;
         }
