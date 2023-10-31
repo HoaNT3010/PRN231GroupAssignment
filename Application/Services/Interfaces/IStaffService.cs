@@ -1,5 +1,6 @@
 ﻿using Application.DTOs.Request.Staff;
 using Application.DTOs.Response.Staff;
+using Domain.Entities;
 
 namespace Application.Services.Interfaces
 {
