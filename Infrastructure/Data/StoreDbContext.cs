@@ -19,7 +19,6 @@ namespace Infrastructure.Data
         public virtual DbSet<Card> Cards { get; set; }
         public virtual DbSet<Wallet> Wallets { get; set; }
         public virtual DbSet<Transaction> Transactions { get; set; }
-
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Staff>()
