@@ -36,12 +36,15 @@ namespace Infrastructure.Repositories.Implementations
 
         public async Task<PagedList<Customer>> GetAll(int pageSize, int pageNumber)
         {
+           
             return await GetPaginatedAsync(pageSize, pageNumber);
         }
 
+
+
         public async Task<Customer> GetCustomerByID(int id)
         {
-            return await dbSet.Include(x => x.Cards).Include(x => x.Invoices).FirstOrDefaultAsync(x => x.Id == id);
+            return await dbSet.Include(x => x.Cards).FirstOrDefaultAsync(x => x.Id == id);
         }
 
         public void UpdateCustomer(UpdateCustomerRequest customer)

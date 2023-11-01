@@ -18,7 +18,6 @@ namespace Application
             services.AddFluentValidationAutoValidation();
             services.AddControllers().AddJsonOptions(x =>
               x.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles);
-
             // Add automapper profiles
             services.AddAutoMapper(assembly);
 
