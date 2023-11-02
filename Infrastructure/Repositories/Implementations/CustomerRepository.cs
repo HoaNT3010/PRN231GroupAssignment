@@ -44,7 +44,7 @@ namespace Infrastructure.Repositories.Implementations
             return await dbSet.Include(x => x.Cards).Include(x => x.Invoices).FirstOrDefaultAsync(x => x.Id == id);
         }
 
-        public void UpdateCustomer(UpdateCustomerRequest customer)
+        public async void UpdateCustomer(UpdateCustomerRequest customer)
         {
             var currentCustomer = GetCustomerByID(customer.Id).Result;
             currentCustomer.Status = customer.Status;

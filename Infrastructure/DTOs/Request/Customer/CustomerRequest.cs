@@ -1,6 +1,7 @@
 ﻿using Domain.Enums;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
@@ -10,8 +11,7 @@ namespace Infrastructure.DTOs.Request.Customer
 {
     public class CustomerRequest
     {
-        
-            public int Id { get; }
+        public int Id { get; }
             public string FirstName { get; set; }
             public string LastName { get; set; } 
             public string PhoneNumber { get; set; }

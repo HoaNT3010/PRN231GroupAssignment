@@ -28,9 +28,7 @@ namespace Application
             services.AddScoped<IInvoiceService, InvoiceService>();
             services.AddScoped<IWalletService, WalletService>();
             services.AddScoped<ICustomerServices, CustomerServices>();
-            services.AddScoped<ICategoryService, CategoryService>();
-            services.AddScoped<IProductService, ProductService>();
-            services.AddScoped<ICardService, CardService>();
+
 
             return services;
         }
