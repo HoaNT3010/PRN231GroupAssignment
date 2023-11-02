@@ -107,6 +107,7 @@ namespace Infrastructure.Repositories.Implementations
         public async Task<Invoice?> GetInvoiceWithCustomerId(int customerId)
         {
             return await dbSet.Include(i => i.InvoiceDetails).FirstOrDefaultAsync(i => i.Customer.Id == customerId);
+
         }
     }
 }
