@@ -6,10 +6,7 @@ namespace Infrastructure.Repositories.Interfaces
 {
     public interface ICustomerRepository : IBaseRepository<Customer>
     {
-<<<<<<< Updated upstream
-=======
 
->>>>>>> Stashed changes
         public Task<Customer> AddNewCustomer(CustomerRequest CustomerCreate);
         public Task<PagedList<Customer>> GetAll(int pageSize, int pageNumber);
         public Task<Customer> GetCustomerByID(int id);
