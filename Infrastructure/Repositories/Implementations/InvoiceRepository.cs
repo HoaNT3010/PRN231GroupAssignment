@@ -103,10 +103,5 @@ namespace Infrastructure.Repositories.Implementations
                     return (query => query.OrderByDescending(i => i.CreateDate));
             }
         }
-
-        public async Task<Invoice?> GetInvoiceWithCustomerId(int customerId)
-        {
-            return await dbSet.Include(i => i.InvoiceDetails).FirstOrDefaultAsync(i => i.Customer.Id == customerId);
-        }
     }
 }
