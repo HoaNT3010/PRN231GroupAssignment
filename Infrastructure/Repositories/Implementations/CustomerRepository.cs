@@ -36,7 +36,11 @@ namespace Infrastructure.Repositories.Implementations
 
         public async Task<PagedList<Customer>> GetAll(int pageSize, int pageNumber)
         {
+<<<<<<< Updated upstream
            
+=======
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
             return await GetPaginatedAsync(pageSize, pageNumber);
         }
 
@@ -48,6 +52,20 @@ namespace Infrastructure.Repositories.Implementations
         }
 
         public void UpdateCustomer(UpdateCustomerRequest customer)
+=======
+           
+            return await GetPaginatedAsync(pageSize, pageNumber);
+        }
+
+
+
+        public async Task<Customer> GetCustomerByID(int id)
+        {
+            return await dbSet.Include(x => x.Cards).FirstOrDefaultAsync(x => x.Id == id);
+        }
+
+        public async void UpdateCustomer(UpdateCustomerRequest customer)
+>>>>>>> Stashed changes
         {
             var currentCustomer = GetCustomerByID(customer.Id).Result;
             currentCustomer.Status = customer.Status;

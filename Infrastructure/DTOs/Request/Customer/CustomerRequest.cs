@@ -1,6 +1,10 @@
 ﻿using Domain.Enums;
 using System;
 using System.Collections.Generic;
+<<<<<<< Updated upstream
+=======
+using System.ComponentModel.DataAnnotations;
+>>>>>>> Stashed changes
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
@@ -10,8 +14,12 @@ namespace Infrastructure.DTOs.Request.Customer
 {
     public class CustomerRequest
     {
+<<<<<<< Updated upstream
         
             public int Id { get; }
+=======
+        public int Id { get; }
+>>>>>>> Stashed changes
             public string FirstName { get; set; }
             public string LastName { get; set; } 
             public string PhoneNumber { get; set; }
