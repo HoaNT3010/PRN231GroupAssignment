@@ -18,13 +18,6 @@ namespace Application
             services.AddFluentValidationAutoValidation();
             services.AddControllers().AddJsonOptions(x =>
               x.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles);
-<<<<<<< Updated upstream
-=======
-<<<<<<< Updated upstream
-
-=======
->>>>>>> Stashed changes
->>>>>>> Stashed changes
             // Add automapper profiles
             services.AddAutoMapper(assembly);
 
@@ -34,13 +27,7 @@ namespace Application
             services.AddScoped<IInvoiceService, InvoiceService>();
             services.AddScoped<IWalletService, WalletService>();
             services.AddScoped<ICustomerServices, CustomerServices>();
-<<<<<<< Updated upstream
-            services.AddScoped<ICategoryService, CategoryService>();
-            services.AddScoped<IProductService, ProductService>();
-            services.AddScoped<ICardService, CardService>();
-=======
 
->>>>>>> Stashed changes
 
             return services;
         }

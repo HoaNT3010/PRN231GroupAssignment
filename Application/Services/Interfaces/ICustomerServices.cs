@@ -12,10 +12,7 @@ namespace Application.Services.Interfaces
     public interface ICustomerServices
     {
         public  Task<Customer> AddNewCustomer(CustomerRequest customer);
-<<<<<<< Updated upstream
-=======
         public Task<Invoice> GetInvoiceWithCustomerId(int customerId);
->>>>>>> Stashed changes
         public Task<Customer> GetCustomerByID(int id);
         public Task<PagedList<Customer>> GetAll(int pageSize, int pageNumber);
         public void UpdateCustomer(UpdateCustomerRequest customer);

@@ -24,18 +24,6 @@ namespace Application.Services.Implementations
         public async Task<Customer> AddNewCustomer(CustomerRequest customer)
         {
             var newCustomer = unitOfWork.CustomerRepository.AddNewCustomer(customer).Result;
-<<<<<<< Updated upstream
-            if (newCustomer != null)
-            {
-                var newcard = await unitOfWork.CardRepository.AddDefaultCard(newCustomer.Id);
-                if (newcard != null)
-                {
-                    await unitOfWork.WalletRepository.AddDefaultWallet(newcard.Id);
-                    
-                }
-            }
-            await unitOfWork.SaveChangeAsync();
-=======
             await unitOfWork.SaveChangeAsync();
 
             if (newCustomer != null)
@@ -49,16 +37,12 @@ namespace Application.Services.Implementations
 
                 }
             }
->>>>>>> Stashed changes
             return newCustomer;
 
         }
 
         public async Task<PagedList<Customer>> GetAll(int pageSize, int pageNumber)
         {
-<<<<<<< Updated upstream
-            return await unitOfWork.CustomerRepository.GetAll(pageSize, pageNumber);
-=======
             var paging = unitOfWork.CustomerRepository.GetAll(pageSize, pageNumber).Result;
             if( paging.Items.Count == 0)
             {
@@ -67,7 +51,6 @@ namespace Application.Services.Implementations
             }
             return paging;
 
->>>>>>> Stashed changes
         }
 
         public async Task<Customer> GetCustomerByID(int id)
@@ -75,12 +58,6 @@ namespace Application.Services.Implementations
             return await unitOfWork.CustomerRepository.GetCustomerByID(id);
         }
 
-<<<<<<< Updated upstream
-        public  void UpdateCustomer(UpdateCustomerRequest customer)
-        {
-            unitOfWork.CustomerRepository.UpdateCustomer(customer);
-            unitOfWork.SaveChangeAsync();
-=======
         public async Task<Invoice> GetInvoiceWithCustomerId(int customerId)
         {
             return await unitOfWork.InvoiceRepository.GetInvoiceWithCustomerId(customerId);
@@ -90,7 +67,6 @@ namespace Application.Services.Implementations
         {
            unitOfWork.CustomerRepository.UpdateCustomer(customer);
            await unitOfWork.SaveChangeAsync();
->>>>>>> Stashed changes
         }
     }
 }
