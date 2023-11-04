@@ -12,6 +12,10 @@ using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.AspNetCore.Http;
 using System.Security.Claims;
 using AutoMapper;
+using Microsoft.AspNetCore.Mvc;
+using Infrastructure.DTOs.Response;
+using Domain.Enums;
+using Application.Mappers.Staff;
 
 namespace Application.Services.Implementations
 {
@@ -43,24 +47,18 @@ namespace Application.Services.Implementations
             return (!staffIdResult) ? null : await unitOfWork.StaffRepository.GetByIdAsync(staffId);
         }
 
-        public async Task CreateStaff(Staff newStaff)
+        public async Task<StaffCreateRequest> CreateStaff(StaffCreateRequest newStaff)
         {
-
+            if (newStaff == null) throw new NotFoundException("Fill all information");
             if (newStaff != null)
             {
-                var staff = unitOfWork.StaffRepository.GetById(newStaff.Id);
-                if (staff != null)
-                {
-                    throw new NotFoundException("This ID had been used");
-                }
-                staff = unitOfWork.StaffRepository.GetByEmail(newStaff.Email);
-                if (staff != null)
-                {
-                    throw new NotFoundException("This Email had been used");
-                }
-                await unitOfWork.StaffRepository.CreateStaff(newStaff);
-
+                var Staff = mapper.Map<Staff>(newStaff);
+                Staff.Status =StaffStatus.Active;
+                Staff.Role = StaffRole.Employee;
+                Staff.CreateDate = DateTime.UtcNow;
+                await unitOfWork.StaffRepository.CreateStaff(Staff);
             }
+            return newStaff;
         }
 
         public async Task DeleteStaff(int id)
@@ -74,29 +72,19 @@ namespace Application.Services.Implementations
 
         }
 
-        public async Task<IEnumerable<Staff>> GetAll()
+        public async Task<List<StaffProfileResponse>> GetAll()
         {
-            List<Staff> list = new List<Staff>();
-            list = (List<Staff>)await unitOfWork.StaffRepository.GetAll();
-            return list;
-        }
-
-        public async Task<IEnumerable<Staff>> GetAllByName(string name)
-        {
-            List<Staff> list = new List<Staff>();
-            list = (List<Staff>)await unitOfWork.StaffRepository.GetAllByName(name);
-            return list;
-        }
-
-        public async Task<Staff> GetByEmail(string email)
-        {
-            Staff s = null;
-            if (email != null)
+            List<Staff> listStaff = new List<Staff>();
+            listStaff = (List<Staff>)await unitOfWork.StaffRepository.GetAllAsync();
+            List<StaffProfileResponse> response = new List<StaffProfileResponse>();
+            foreach (Staff profile in listStaff)
             {
-                s = await unitOfWork.StaffRepository.GetByEmail(email);
+                response.Add(mapper.Map<StaffProfileResponse>(profile));
             }
-            return s;
+            return response;
         }
+
+
 
         public async Task<Staff> GetById(int id)
         {
@@ -130,18 +118,129 @@ namespace Application.Services.Implementations
             return result;
         }
 
-        public void UpdateStaff(Staff newStaff)
+        public async Task UpdateStaff(StaffUpdateRequest newStaff)
         {
             if (newStaff != null)
             {
-                var staff = unitOfWork.StaffRepository.GetById(newStaff.Id);
+                var staff = await unitOfWork.StaffRepository.GetById(newStaff.Id);
                 if (staff == null)
                 {
                     throw new NotFoundException("This ID doesn't exist");
                 }
-                unitOfWork.StaffRepository.UpdateStaff(newStaff);
+                var entityStaff = mapper.Map<Staff>(newStaff);
+                entityStaff.UpdateDate = DateTime.UtcNow;
+                entityStaff.CreateDate = staff.CreateDate;
+                entityStaff.Invoices = staff.Invoices;
+                entityStaff.Transactions = staff.Transactions;
+                entityStaff.Role = staff.Role;
+                entityStaff.Status = staff.Status;
+                unitOfWork.StaffRepository.UpdateStaff(entityStaff);
             }
 
+        }
+
+        public async Task<List<StaffProfileResponse>> SearchStaff(string keyword, string type)
+        {
+            List<StaffProfileResponse> staffs = await GetAll();
+            List<StaffProfileResponse> searchStaff = new List<StaffProfileResponse>();
+            if (keyword == "")
+            {
+                return staffs;
+            }
+            else
+            {
+                switch (type)
+                {
+                    case "FirstName":
+                        {
+                            foreach (var staff in staffs)
+                            {
+                                if (staff.FirstName.ToUpper().Contains(keyword.ToUpper()))
+                                {
+                                    searchStaff.Add(staff);
+                                }
+                            }
+                            break;
+                        }
+                    case "LastName":
+                        {
+
+                            foreach (var staff in staffs)
+                            {
+                                if (staff.LastName.ToUpper().Contains(keyword.ToUpper()))
+                                {
+                                    searchStaff.Add(staff);
+                                }
+                            }
+                            break;
+                        }
+                    case "FullName":
+                        {
+
+                            foreach (var staff in staffs)
+                            {
+                                if (staff.FirstName.ToUpper().Contains(keyword.ToUpper()) || staff.LastName.ToUpper().Contains(keyword.ToUpper()))
+                                {
+                                    searchStaff.Add(staff);
+                                }
+                            }
+                            break;
+                        }
+                    case "Email":
+                        {
+
+                            foreach (var staff in staffs)
+                            {
+                                if (staff.Email.ToUpper().Contains(keyword.ToUpper()))
+                                {
+                                    searchStaff.Add(staff);
+                                }
+                            }
+                            break;
+                        }
+                    default:
+                        {
+                            foreach (var staff in staffs)
+                            {
+                                if (staff.FirstName.ToUpper().Contains(keyword.ToUpper()) || staff.LastName.ToUpper().Contains(keyword.ToUpper()))
+                                {
+                                    searchStaff.Add(staff);
+                                }
+                            }
+                            break;
+                        }
+                }
+                return searchStaff;
+            }
+
+
+        }
+
+        public async Task<Staff> UpdateRole(int id, bool upRole)
+        {
+            if (id != null)
+            {
+                var Staff = await GetById(id);
+                if (Staff == null)
+                {
+                    throw new NotFoundException("This Staff ID doesn't exist");
+                }
+                if (upRole)
+                {
+                    Staff.Role = StaffRole.Manager;
+                    unitOfWork.StaffRepository.UpdateStaff(Staff);
+                }
+                else
+                {
+                    Staff.Role = StaffRole.Employee;
+                    unitOfWork.StaffRepository.UpdateStaff(Staff);
+                }
+                return Staff;
+            }
+            else
+            {
+                throw new NotFoundException("Please input ID");
+            }
         }
     }
 }

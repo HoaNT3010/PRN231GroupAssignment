@@ -68,4 +68,11 @@
         Cancelled,
         Failed
     }
+    public enum SearchType
+    {
+        FirstName,
+        LastName,
+        FullName,
+        Email
+    }
 }
