@@ -25,7 +25,7 @@ namespace WebAPI.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpGet]
-        [Route("api/v1/staff/GetAll")]
+        [Route("all")]
         [Authorize]
         public async Task<ActionResult<ResponseObject<List<StaffProfileResponse>>>> GetAll()
         {
@@ -53,8 +53,8 @@ namespace WebAPI.Controllers
         /// <param name="id"></param>
         /// <returns></returns>
         
-        [HttpGet("{id}")]
-        [Route("api/v1/staff/Get/{Id}")]
+        [HttpGet]
+        [Route("{id}")]
         [Authorize]
         public async Task<IActionResult> GetById(int id)
         {
@@ -69,13 +69,14 @@ namespace WebAPI.Controllers
             }
             catch { return BadRequest(); }
         }
+
         /// <summary>
         /// Create a Staff information
         /// </summary>
         /// <param name="staff"></param>
         /// <returns></returns>
         [HttpPost]
-        [Route("api/v1/staff/Create")]
+        [Route("create")]
         [Authorize]
         public async Task<ActionResult<ResponseObject<StaffCreateRequest>>> Create([FromBody] StaffCreateRequest staff)
         {
@@ -103,8 +104,8 @@ namespace WebAPI.Controllers
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        [HttpDelete("{id}")]
-        [Route("api/v1/staff/Delete/{id}")]
+        [HttpDelete]
+        [Route("delete/{id}")]
         [Authorize]
         public async Task<IActionResult> Delete(int id)
         {
@@ -126,9 +127,9 @@ namespace WebAPI.Controllers
         /// <param name="staff"></param>
         /// <returns></returns>
         [HttpPut]
-        [Route("api/v1/staff/Update/{id}")]
+        [Route("update/{id}")]
         [Authorize]
-        public async Task<ActionResult<ResponseObject<StaffUpdateRequest>>> Update([FromBody] StaffUpdateRequest staff)
+        public async Task<ActionResult<ResponseObject<StaffUpdateRequest>>> Update([FromRoute] int id, [FromBody] StaffUpdateRequest staff)
         {
             try
             {
@@ -152,28 +153,28 @@ namespace WebAPI.Controllers
             }
 
 
-        [HttpPost]
-        [Route("api/vi/staff/Create")]
-        public async Task<ActionResult<ResponseObject<StaffCreateRequest>>> CreateStaff([FromBody] StaffCreateRequest createRequest)
-        {
-            try
-            {
-                _staffService.CreateStaff(createRequest);
-                return Ok(new ResponseObject<StaffCreateRequest>()
-                {
-                    Status= ResponseStatus.Success.ToString(),
-                    Message="Create Success",
-                    Data= createRequest
-                });
-            }catch(Exception ex)
-            {
-                return Ok(new ResponseObject<StaffCreateRequest>()
-                {
-                    Status = ResponseStatus.Failed.ToString(),
-                    Message = ex.Message.ToString()
-                });
-            }
-        }
+        //[HttpPost]
+        //[Route("create")]
+        //public async Task<ActionResult<ResponseObject<StaffCreateRequest>>> CreateStaff([FromBody] StaffCreateRequest createRequest)
+        //{
+        //    try
+        //    {
+        //        _staffService.CreateStaff(createRequest);
+        //        return Ok(new ResponseObject<StaffCreateRequest>()
+        //        {
+        //            Status= ResponseStatus.Success.ToString(),
+        //            Message="Create Success",
+        //            Data= createRequest
+        //        });
+        //    }catch(Exception ex)
+        //    {
+        //        return Ok(new ResponseObject<StaffCreateRequest>()
+        //        {
+        //            Status = ResponseStatus.Failed.ToString(),
+        //            Message = ex.Message.ToString()
+        //        });
+        //    }
+        //}
     }
 }
     

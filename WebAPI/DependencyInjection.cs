@@ -52,6 +52,9 @@ namespace WebAPI
                 builder.AddSerilog();
             });
 
+            // Configuring Momo options
+            services.ConfigureOptions<MomoOptionsSetup>();
+
             return services;
         }
     }
