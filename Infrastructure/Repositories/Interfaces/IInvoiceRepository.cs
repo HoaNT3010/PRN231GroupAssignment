@@ -6,8 +6,6 @@ namespace Infrastructure.Repositories.Interfaces
 {
     public interface IInvoiceRepository : IBaseRepository<Invoice>
     {
-
-        Task<Invoice> GetInvoiceWithCustomerId(int customerId);
         Task<Invoice?> GetInvoiceWithDetails(int id);
         Task<PagedList<Invoice>> GetInvoicesList(InvoiceListParameters parameters);
     }

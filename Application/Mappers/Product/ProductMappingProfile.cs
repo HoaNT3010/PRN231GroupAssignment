@@ -39,6 +39,11 @@ namespace Application.Mappers.Product
             CreateMap<ProductUpdateRequest, Domain.Entities.Product>()
                .ForAllMembers(opt => opt.Condition((src, dest, srcMember) => srcMember != null));
 
+            CreateMap<ProductStatusUpdateRequest, Domain.Entities.Product>()
+               .ForAllMembers(opt => opt.Condition((src, dest, srcMember) => srcMember != null));
+
+            CreateMap<ProductQuantityUpdateRequest, Domain.Entities.Product>()
+               .ForAllMembers(opt => opt.Condition((src, dest, srcMember) => srcMember != null));
         }
     }
 }

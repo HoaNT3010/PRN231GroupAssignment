@@ -29,7 +29,7 @@ namespace WebAPI.Controllers
         [HttpGet]
         [Produces("application/json")]
         [ProducesResponseType((int)HttpStatusCode.OK, Type = typeof(ResponseObject<PagedList<ProductResponse>>))]
-        public async Task<ActionResult> GetCategoryList([FromQuery] QueryStringParameters parameters)
+        public async Task<ActionResult> GetCategoryList([FromQuery] ProductListParameters parameters)
         {
             _logger.LogInformation("Retrieving data of products");
             var result = await _productService.GetProductList(parameters);
@@ -41,8 +41,7 @@ namespace WebAPI.Controllers
             });
         }
 
-        [HttpGet]
-        [Route("{id}")]
+        [HttpGet("{id}")]
         [Produces("application/json")]
         [ProducesResponseType((int)HttpStatusCode.OK, Type = typeof(ResponseObject<ProductResponse>))]
         [ProducesResponseType((int)HttpStatusCode.NotFound, Type = typeof(ErrorDetail))]
@@ -75,11 +74,10 @@ namespace WebAPI.Controllers
             });
         }
 
-        [HttpPut]
-        [Route("{id}")]
+        [HttpPut("{id}")]
         [Produces("application/json")]
         [ProducesResponseType((int)HttpStatusCode.OK, Type = typeof(ResponseObject<ProductResponse>))]
-        public async Task<ActionResult<ResponseObject<ProductResponse>>> UpdateCategory([FromRoute] int id, [FromBody] ProductUpdateRequest request)
+        public async Task<ActionResult<ResponseObject<ProductResponse>>> UpdateProduct([FromRoute] int id, [FromBody] ProductUpdateRequest request)
         {
             _logger.LogInformation("Update product with Id: {id}", id);
             var result = await _productService.updateProduct(id, request);
@@ -91,8 +89,37 @@ namespace WebAPI.Controllers
             });
         }
 
-        [HttpDelete]
-        [Route("{id}")]
+        [HttpPut("/{id}/pstatus")]
+        [Produces("application/json")]
+        [ProducesResponseType((int)HttpStatusCode.OK, Type = typeof(ResponseObject<ProductResponse>))]
+        public async Task<ActionResult<ResponseObject<ProductResponse>>> UpdateProductStatus([FromRoute] int id, [FromBody] ProductStatusUpdateRequest request)
+        {
+            _logger.LogInformation("Update product with Id: {id}", id);
+            var result = await _productService.updateProductStatus(id, request);
+            return Ok(new ResponseObject<ProductResponse>()
+            {
+                Status = ResponseStatus.Success.ToString(),
+                Message = $"Product [Id: {id}] has been updated",
+                Data = result
+            });
+        }
+
+        [HttpPut("/{id}/quantity")]
+        [Produces("application/json")]
+        [ProducesResponseType((int)HttpStatusCode.OK, Type = typeof(ResponseObject<ProductResponse>))]
+        public async Task<ActionResult<ResponseObject<ProductResponse>>> UpdateProductQuantity([FromRoute] int id, [FromBody] ProductQuantityUpdateRequest request)
+        {
+            _logger.LogInformation("Update product with Id: {id}", id);
+            var result = await _productService.updateProductQuantity(id, request);
+            return Ok(new ResponseObject<ProductResponse>()
+            {
+                Status = ResponseStatus.Success.ToString(),
+                Message = $"Product [Id: {id}] has been updated",
+                Data = result
+            });
+        }
+
+        [HttpDelete("{id}")]
         [Produces("application/json")]
         [ProducesResponseType((int)HttpStatusCode.OK, Type = typeof(ResponseObject<ProductResponse>))]
         public async Task<ActionResult<ResponseObject<ProductResponse>>> DeleteProduct([FromRoute] int id)

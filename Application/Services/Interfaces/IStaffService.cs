@@ -1,32 +1,16 @@
-﻿using Infrastructure.DTOs.Request.Staff;
+﻿using Domain.Entities;
+using Infrastructure.DTOs.Request.Staff;
 using Infrastructure.DTOs.Response.Staff;
-using Domain.Entities;
-using Infrastructure.DTOs.Response;
-using Application.ErrorHandlers;
-using Application.Services.Implementations;
-using AutoMapper;
-using Infrastructure.Data;
-using System.Security.Claims;
 
 namespace Application.Services.Interfaces
 {
     public interface IStaffService
     {
-        public Task<Staff?> GetCurrentStaff();
-
-        public Task<StaffCreateRequest> CreateStaff(StaffCreateRequest newStaff);
-
-        public Task DeleteStaff(int id);
-        public Task<List<StaffProfileResponse>> GetAll();
-
-
-        public Task<Staff> GetById(int id);
-
-        public Task<Staff?> GetByUsername(string username);
-
-        public Task<StaffLoginResponse?> Login(StaffLoginRequest loginRequest);
-        public Task UpdateStaff(StaffUpdateRequest newStaff);
-        public Task<List<StaffProfileResponse>> SearchStaff(string keyword, string type);
-        public Task<Staff> UpdateRole(int id, bool upRole);
-}
+        Task<StaffLoginResponse?> Login(StaffLoginRequest loginRequest);
+        /// <summary>
+        /// Get user based on Http request's Jwt token information
+        /// </summary>
+        /// <returns></returns>
+        Task<Staff?> GetCurrentStaff();
+    }
 }

@@ -63,7 +63,7 @@ namespace WebAPI.Controllers
         [Authorize(Policy = IdentityData.ManagerPolicyName)]
         [Produces("application/json")]
         [ProducesResponseType((int)HttpStatusCode.OK, Type = typeof(ResponseObject<PagedList<InvoiceResponse>>))]
-        public async Task<ActionResult<ResponseObject<PagedList<InvoiceResponse>>>> GetInvoiceList([FromQuery] InvoiceListParameters parameters)
+        public async Task<ActionResult> GetInvoiceList([FromQuery] InvoiceListParameters parameters)
         {
             logger.LogInformation("Retrieving data of invoices");
             var result = await invoiceService.GetInvoiceList(parameters);

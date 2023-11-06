@@ -1,6 +1,6 @@
 ﻿namespace Infrastructure.DTOs.Request.Wallet
 {
-    public class WalletBalanceRechargeRequest
+    public class WalletBalanceRechargeCashRequest
     {
         public decimal Amount { get; set; }
     }
