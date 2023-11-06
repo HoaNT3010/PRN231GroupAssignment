@@ -126,13 +126,11 @@ namespace Application.Services.Implementations
             if (newStaff != null)
             {
                 var staff = await GetById(newStaff.Id);
-               Console.WriteLine( staff.DateOfBirth.ToString());
                 if (staff == null)
                 {
                     throw new NotFoundException("This ID doesn't exist");
                 }
                 var entityStaff = mapper.Map<Staff>(newStaff);
-                Console.WriteLine(staff.DateOfBirth.ToString());
                 entityStaff.UpdateDate = DateTime.UtcNow;
                 entityStaff.CreateDate = staff.CreateDate;
                 entityStaff.Invoices = staff.Invoices;
@@ -140,7 +138,6 @@ namespace Application.Services.Implementations
                 entityStaff.Role = staff.Role;
                 entityStaff.Status = staff.Status;
                await unitOfWork.StaffRepository.UpdateStaff(entityStaff);
-                Console.WriteLine(staff.DateOfBirth.ToString());
                 await unitOfWork.SaveChangeAsync();
             }
 
