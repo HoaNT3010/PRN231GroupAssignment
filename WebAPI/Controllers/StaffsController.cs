@@ -2,6 +2,7 @@
 using Application.Services.Interfaces;
 using Domain.Entities;
 using Domain.Enums;
+using Infrastructure.Data;
 using Infrastructure.DTOs.Request.Staff;
 using Infrastructure.DTOs.Response;
 using Infrastructure.DTOs.Response.Staff;
@@ -26,24 +27,24 @@ namespace WebAPI.Controllers
         /// <returns></returns>
         [HttpGet]
         [Route("all")]
-        [Authorize]
+        //[Authorize]
         public async Task<ActionResult<ResponseObject<List<StaffProfileResponse>>>> GetAll()
         {
-            var list=await _staffService.GetAll();
-           if (list!=null)
+            var list = await _staffService.GetAll();
+            if (list != null)
             {
                 return Ok(new ResponseObject<List<StaffProfileResponse>>()
                 {
                     Status = ResponseStatus.Success.ToString(),
                     Data = list
-                }) ;
+                });
             }
             else
             {
                 return Ok(new ResponseObject<StaffProfileResponse>()
                 {
-                    Status=ResponseStatus.Failed.ToString(),
-                    Message="Empty"
+                    Status = ResponseStatus.Failed.ToString(),
+                    Message = "Empty"
                 });
             }
         }
@@ -52,22 +53,40 @@ namespace WebAPI.Controllers
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        
+
         [HttpGet]
         [Route("{id}")]
-        [Authorize]
-        public async Task<IActionResult> GetById(int id)
+        //[Authorize]
+        public async Task<ActionResult<ResponseObject<Staff>>> GetById(int id)
         {
             try
             {
                 var staff = await _staffService.GetById(id);
                 if (staff != null)
                 {
-                    return Ok(staff);
+                    return Ok(new ResponseObject<Staff>()
+                    {
+                        Status = ResponseStatus.Success.ToString(),
+                        Message = $"Get Staff by ID",
+                        Data = staff
+                    });
                 }
-                return NotFound();
+                return Ok(new ResponseObject<Staff>()
+                {
+                    Status = ResponseStatus.Failed.ToString(),
+                    Message = $"Not found this Staff ID",
+
+                });
             }
-            catch { return BadRequest(); }
+            catch (Exception ex)
+            {
+                return Ok(new ResponseObject<String>()
+                {
+                    Status = ResponseStatus.Failed.ToString(),
+                    Message = $"Get Staff by ID",
+                    Data = ex.Message
+                });
+            }
         }
 
         /// <summary>
@@ -77,23 +96,24 @@ namespace WebAPI.Controllers
         /// <returns></returns>
         [HttpPost]
         [Route("create")]
-        [Authorize]
+        //[Authorize]
         public async Task<ActionResult<ResponseObject<StaffCreateRequest>>> Create([FromBody] StaffCreateRequest staff)
         {
             try
             {
-               var result= await _staffService.CreateStaff(staff);
+                var result = await _staffService.CreateStaff(staff);
                 return Ok(new ResponseObject<StaffCreateRequest>()
                 {
                     Status = ResponseStatus.Success.ToString(),
                     Message = $"Create Staff Success",
                     Data = result
-                }) ;
+                });
             }
             catch (Exception ex)
             {
-                return Ok(new ResponseObject<StaffCreateRequest>() { 
-                    Status=ResponseStatus.Failed.ToString(),
+                return Ok(new ResponseObject<StaffCreateRequest>()
+                {
+                    Status = ResponseStatus.Failed.ToString(),
                     Message = ex.Message
                 });
             }
@@ -106,17 +126,39 @@ namespace WebAPI.Controllers
         /// <returns></returns>
         [HttpDelete]
         [Route("delete/{id}")]
-        [Authorize]
-        public async Task<IActionResult> Delete(int id)
+        //[Authorize]
+        public async Task<ActionResult<ResponseObject<Staff>>> Delete(int id)
         {
             try
             {
-                await _staffService.DeleteStaff(id);
-                return Ok();
+                Staff s= await _staffService.GetById(id);
+                if (s != null)
+                {
+                    await _staffService.DeleteStaff(id);
+                    return Ok(new ResponseObject<Staff>()
+                    {
+                        Status = ResponseStatus.Success.ToString(),
+                        Message = $"Delete Successfully",
+                        Data=s
+                    });
+                }
+                else
+                {
+                    return Ok(new ResponseObject<Staff>()
+                    {
+                        Status = ResponseStatus.Failed.ToString(),
+                        Message = $"Delete Faile - Can't Find this Staff"
+                    });
+                }
+
             }
             catch (Exception ex)
             {
-                return Ok(new { Success = false, Data = ex.Message });
+                return Ok(new ResponseObject<Staff>()
+                {
+                    Status = ResponseStatus.Failed.ToString(),
+                    Message = ex.Message
+                });
             }
         }
 
@@ -127,9 +169,9 @@ namespace WebAPI.Controllers
         /// <param name="staff"></param>
         /// <returns></returns>
         [HttpPut]
-        [Route("update/{id}")]
-        [Authorize]
-        public async Task<ActionResult<ResponseObject<StaffUpdateRequest>>> Update([FromRoute] int id, [FromBody] StaffUpdateRequest staff)
+        [Route("update")]
+        //[Authorize]
+        public async Task<ActionResult<ResponseObject<StaffUpdateRequest>>> Update([FromBody] StaffUpdateRequest staff)
         {
             try
             {
@@ -148,33 +190,57 @@ namespace WebAPI.Controllers
                     Status = ResponseStatus.Failed.ToString(),
                     Message = ex.Message.ToString()
                 });
-              }
-
             }
 
+        }
+        [HttpPut]
+        [Route("UpdateRole")]
+        //[Authorize]
+        public async Task<ActionResult<ResponseObject<Staff>>> UpdateRole(int id, StaffRole role)
+        {
+            try
+            {
+                Staff staff= await _staffService.UpdateRole(id, role);
+                return Ok(new ResponseObject<Staff>()
+                {
+                    Status = ResponseStatus.Success.ToString(),
+                    Message = $"Update succes",
+                    Data = staff
+                });
 
-        //[HttpPost]
-        //[Route("create")]
-        //public async Task<ActionResult<ResponseObject<StaffCreateRequest>>> CreateStaff([FromBody] StaffCreateRequest createRequest)
-        //{
-        //    try
-        //    {
-        //        _staffService.CreateStaff(createRequest);
-        //        return Ok(new ResponseObject<StaffCreateRequest>()
-        //        {
-        //            Status= ResponseStatus.Success.ToString(),
-        //            Message="Create Success",
-        //            Data= createRequest
-        //        });
-        //    }catch(Exception ex)
-        //    {
-        //        return Ok(new ResponseObject<StaffCreateRequest>()
-        //        {
-        //            Status = ResponseStatus.Failed.ToString(),
-        //            Message = ex.Message.ToString()
-        //        });
-        //    }
-        //}
+            }
+            catch (Exception ex)
+            {
+                return Ok(new ResponseObject<Staff>()
+                {
+                    Status = ResponseStatus.Failed.ToString(),
+                    Message = ex.Message.ToString()
+                });
+            }
+
+        }
+        [HttpGet]
+        [Route("Search/{keyword}/{type}")]
+        //[Authorize]
+        public async Task<ActionResult<ResponseObject<List<StaffProfileResponse>>>> Search([FromRoute] string keyword,[FromRoute] SearchType type)
+        {
+            try
+            {
+                List<StaffProfileResponse> s = await _staffService.SearchStaff(keyword, type);
+                return Ok(new ResponseObject<List<StaffProfileResponse>>()
+                {
+                    Status = ResponseStatus.Success.ToString(),
+                    Data = s
+                });
+            }catch(Exception ex)
+            {
+                return Ok(new ResponseObject<List<Staff>>()
+                {
+                    Status = ResponseStatus.Failed.ToString(),
+                    Message = ex.Message.ToString()
+                });
+            }
+        }
     }
 }
-    
+

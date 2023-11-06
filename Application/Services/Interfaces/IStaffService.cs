@@ -7,6 +7,7 @@ using Application.Services.Implementations;
 using AutoMapper;
 using Infrastructure.Data;
 using System.Security.Claims;
+using Domain.Enums;
 
 namespace Application.Services.Interfaces
 {
@@ -26,7 +27,7 @@ namespace Application.Services.Interfaces
 
         public Task<StaffLoginResponse?> Login(StaffLoginRequest loginRequest);
         public Task UpdateStaff(StaffUpdateRequest newStaff);
-        public Task<List<StaffProfileResponse>> SearchStaff(string keyword, string type);
-        public Task<Staff> UpdateRole(int id, bool upRole);
+        public Task<List<StaffProfileResponse>> SearchStaff(string keyword, SearchType type);
+        public Task<Staff> UpdateRole(int id, StaffRole upRole);
 }
 }
