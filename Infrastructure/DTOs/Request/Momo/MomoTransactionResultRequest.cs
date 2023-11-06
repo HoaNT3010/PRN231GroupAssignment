@@ -8,7 +8,7 @@
         public long amount { get; set; }
         public string? orderInfo { get; set; } = string.Empty;
         public string? orderType { get; set; } = string.Empty;
-        public string? TransId { get; set; } = string.Empty;
+        public string? transId { get; set; } = string.Empty;
         public int resultCode { get; set; }
         public string? message { get; set; } = string.Empty;
         public string? payType { get; set; } = string.Empty;
