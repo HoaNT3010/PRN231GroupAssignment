@@ -194,9 +194,9 @@ namespace WebAPI.Controllers
 
         }
         [HttpPut]
-        [Route("UpdateRole")]
+        [Route("UpdateRole/{id}/{role}")]
         //[Authorize]
-        public async Task<ActionResult<ResponseObject<Staff>>> UpdateRole(int id, StaffRole role)
+        public async Task<ActionResult<ResponseObject<Staff>>> UpdateRole([FromRoute] int id,[FromRoute] StaffRole role)
         {
             try
             {

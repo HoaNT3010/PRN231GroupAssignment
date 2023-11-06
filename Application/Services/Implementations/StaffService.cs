@@ -126,18 +126,21 @@ namespace Application.Services.Implementations
             if (newStaff != null)
             {
                 var staff = await GetById(newStaff.Id);
+               Console.WriteLine( staff.DateOfBirth.ToString());
                 if (staff == null)
                 {
                     throw new NotFoundException("This ID doesn't exist");
                 }
                 var entityStaff = mapper.Map<Staff>(newStaff);
+                Console.WriteLine(staff.DateOfBirth.ToString());
                 entityStaff.UpdateDate = DateTime.UtcNow;
                 entityStaff.CreateDate = staff.CreateDate;
                 entityStaff.Invoices = staff.Invoices;
                 entityStaff.Transactions = staff.Transactions;
                 entityStaff.Role = staff.Role;
                 entityStaff.Status = staff.Status;
-                unitOfWork.StaffRepository.UpdateStaff(entityStaff);
+               await unitOfWork.StaffRepository.UpdateStaff(entityStaff);
+                Console.WriteLine(staff.DateOfBirth.ToString());
                 await unitOfWork.SaveChangeAsync();
             }
 
@@ -216,7 +219,7 @@ namespace Application.Services.Implementations
                     throw new NotFoundException("This Staff ID doesn't exist");
                 }
                 Staff.Role = upRole;
-                unitOfWork.StaffRepository.UpdateStaff(Staff);
+              await  unitOfWork.StaffRepository.UpdateStaff(Staff);
                 await unitOfWork.SaveChangeAsync();
                 return Staff;
             }

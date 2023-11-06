@@ -82,7 +82,21 @@ namespace Infrastructure.Repositories.Implementations
 
         public async Task UpdateStaff(Staff newStaff)
         {
-            UpdateAsync(newStaff);
+           Staff s= await GetById(newStaff.Id);
+            if (s != null)
+            {
+                s.Status = StaffStatus.Active;
+                s.Email = newStaff.Email;
+                s.Username = newStaff.Username;
+                s.PasswordHash = newStaff.PasswordHash;
+                s.DateOfBirth = newStaff.DateOfBirth;
+                s.FirstName = newStaff.FirstName;
+                s.LastName = newStaff.LastName;
+                s.PhoneNumber = newStaff.PhoneNumber;
+                s.Gender = newStaff.Gender;
+                s.Address = newStaff.Address;
+                s.UpdateDate = newStaff.UpdateDate;
+            }
         }
     }
 }
