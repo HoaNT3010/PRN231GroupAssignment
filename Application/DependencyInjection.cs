@@ -31,6 +31,7 @@ namespace Application
             services.AddScoped<ICardService, CardService>();
             services.AddScoped<ICategoryService, CategoryService>();
             services.AddScoped<IProductService, ProductService>();
+            services.AddScoped<IMomoService, MomoService>();
 
 
             return services;

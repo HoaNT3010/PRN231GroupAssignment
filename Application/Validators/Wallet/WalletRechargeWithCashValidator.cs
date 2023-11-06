@@ -3,7 +3,7 @@ using Infrastructure.DTOs.Request.Wallet;
 
 namespace Application.Validators.Wallet
 {
-    public class WalletRechargeWithCashValidator : AbstractValidator<WalletBalanceRechargeCashRequest>
+    public class WalletRechargeWithCashValidator : AbstractValidator<WalletBalanceRechargeRequest>
     {
         public WalletRechargeWithCashValidator()
         {
