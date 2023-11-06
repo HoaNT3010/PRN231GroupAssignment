@@ -4,10 +4,13 @@ using AutoMapper;
 using Domain.Entities;
 using Domain.Enums;
 using Infrastructure.Data;
+using Infrastructure.DTOs.Request.Momo;
 using Infrastructure.DTOs.Request.Wallet;
 using Infrastructure.DTOs.Response.Momo;
 using Infrastructure.DTOs.Response.Wallet;
+using Infrastructure.Utils;
 using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
 
 namespace Application.Services.Implementations
 {
@@ -40,7 +43,7 @@ namespace Application.Services.Implementations
                 currentStaff.Id,
                 cashRequest.Amount,
                 TransactionMethod.Cash,
-                decription: $"Customer recharge {cashRequest.Amount} VND by cash to wallet [Id: {wallet.Id}] balance");
+                decription: $"Customer recharge {cashRequest.Amount} VND to wallet balance by cash");
             try
             {
                 await unitOfWork.BeginTransactionAsync();
@@ -66,8 +69,8 @@ namespace Application.Services.Implementations
             catch (Exception ex)
             {
                 await unitOfWork.RollbackAsync();
-                logger.LogError(ex, "Error occurred when trying to recharge money to wallet with Id: {walletId} with cash", wallet.Id);
-                throw new Exception($"Error occurred when trying to recharge money to wallet with Id: {wallet.Id}");
+                logger.LogError(ex, "Error occurred when trying to process recharge money to wallet with Id: {walletId} by cash", wallet.Id);
+                throw new Exception($"Error occurred when trying to process recharge money to wallet with Id: {wallet.Id} by cash");
             }
             finally
             {
@@ -111,13 +114,53 @@ namespace Application.Services.Implementations
 
         public async Task<MomoTransactionResponse?> RechargeBalanceWithMomo(int walletId, WalletBalanceRechargeRequest rechargeRequest)
         {
-            //var currentStaff = await staffService.GetCurrentStaff();
-            //if (currentStaff == null)
-            //{
-            //    throw new NotFoundException("Cannot find current staff data");
-            //}
+            var currentStaff = await staffService.GetCurrentStaff();
+            if (currentStaff == null)
+            {
+                throw new NotFoundException("Cannot find current staff data");
+            }
             var wallet = GetAndValidateWallet(walletId);
-            return await momoService.CreateMomoPayment(walletId, rechargeRequest);
+            return await momoService.CreateMomoPayment(walletId, currentStaff.Id, rechargeRequest);
+        }
+
+        public async Task ProcessMomoTransactionResult(MomoTransactionResultRequest result)
+        {
+            (bool validateTransaction, string message) = momoService.ValidateMomoPaymentResult(result);
+            // Transaction is cancel or failed
+            if (!validateTransaction)
+            {
+                return;
+            }
+            // Transaction is success
+            var extraDataObject = JsonConvert.DeserializeObject<ExtraData>(HashHelper.DecodeFromBase64(result.extraData!));
+            var wallet = await GetAndValidateWallet(extraDataObject!.WalletId);
+            var transaction = GenerateBalanceRechargeTransaction(wallet.Id,
+                extraDataObject.StaffId,
+                result.amount,
+                TransactionMethod.eWallet,
+                $"Customer recharge {result.amount} VND to wallet balance by Momo e-wallet",
+                result.transId);
+            try
+            {
+                await unitOfWork.BeginTransactionAsync();
+
+                await unitOfWork.TransactionRepository.AddAsync(transaction);
+                wallet.Balance += transaction.Amount;
+                unitOfWork.WalletRepository.UpdateAsync(wallet);
+
+                await unitOfWork.SaveChangeAsync();
+                await unitOfWork.CommitAsync();
+            }
+            catch (Exception ex)
+            {
+                await unitOfWork.RollbackAsync();
+                logger.LogError(ex, "Error occurred when trying to process recharge money to wallet by with Id: {walletId} by momo e-wallet", wallet.Id);
+                throw new Exception($"Error occurred when trying to process recharge money to wallet with Id: {wallet.Id} by momo e-wallet");
+            }
+            finally
+            {
+                await unitOfWork.DisposeAsync();
+            }
         }
     }
 }

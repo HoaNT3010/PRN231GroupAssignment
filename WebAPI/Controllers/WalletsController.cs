@@ -34,7 +34,7 @@ namespace WebAPI.Controllers
         /// <param name="cashRequest">Data for recharge request</param>
         /// <returns></returns>
         [HttpPost]
-        [Route("recharge/{walletId}/cash")]
+        [Route("{walletId}/recharge/cash")]
         [Authorize]
         [Produces("application/json")]
         [ProducesResponseType((int)HttpStatusCode.OK, Type = typeof(ResponseObject<WalletRechargeBalanceResponse>))]
@@ -57,8 +57,8 @@ namespace WebAPI.Controllers
         /// <param name="cashRequest"></param>
         /// <returns></returns>
         [HttpPost]
-        [Route("recharge/{walletId}/momo")]
-        //[Authorize]
+        [Route("{walletId}/recharge/momo")]
+        [Authorize]
         [Produces("application/json")]
         [ProducesResponseType((int)HttpStatusCode.OK, Type = typeof(ResponseObject<MomoTransactionResponse>))]
         public async Task<ActionResult<ResponseObject<MomoTransactionResponse>>> RechargeWalletBalanceWithMomo([FromRoute] int walletId, [FromBody] WalletBalanceRechargeRequest rechargeRequest)
@@ -82,17 +82,33 @@ namespace WebAPI.Controllers
             });
         }
 
+        /// <summary>
+        /// Receive and process result of momo transaction. Do not use!
+        /// </summary>
+        /// <param name="resultRequest"></param>
+        /// <returns></returns>
         [HttpGet]
         [Route("recharge/momo/return")]
+        [ProducesResponseType((int)HttpStatusCode.NoContent)]
         public async Task<ActionResult> MomoTransactionGetReturn([FromQuery] MomoTransactionResultRequest resultRequest)
         {
+            logger.LogInformation("Receive momo transaction result via HTTP GET method");
+            await walletService.ProcessMomoTransactionResult(resultRequest);
             return NoContent();
         }
 
+        /// <summary>
+        /// Receive and process result of momo transaction. Do not use!
+        /// </summary>
+        /// <param name="resultRequest"></param>
+        /// <returns></returns>
         [HttpPost]
         [Route("recharge/momo/return")]
+        [ProducesResponseType((int)HttpStatusCode.NoContent)]
         public async Task<ActionResult> MomoTransactionPostReturn([FromBody] MomoTransactionResultRequest resultRequest)
         {
+            logger.LogInformation("Receive momo transaction result via HTTP POST method");
+            await walletService.ProcessMomoTransactionResult(resultRequest);
             return NoContent();
         }
     }
