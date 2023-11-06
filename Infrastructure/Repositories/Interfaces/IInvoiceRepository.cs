@@ -8,5 +8,7 @@ namespace Infrastructure.Repositories.Interfaces
     {
         Task<Invoice?> GetInvoiceWithDetails(int id);
         Task<PagedList<Invoice>> GetInvoicesList(InvoiceListParameters parameters);
+        Task<Invoice> GetInvoiceWithCustomerId(int customerId);
+
     }
 }

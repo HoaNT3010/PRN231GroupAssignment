@@ -31,14 +31,14 @@ namespace WebAPI.Controllers
         /// <param name="pageSize">Parameters for page Size</param>
         /// <param name="pageNumber">Parameters for page Number</param>
         /// <returns></returns>
-        [ProducesResponseType((int)HttpStatusCode.OK, Type = typeof(ResponseObject<PagedList<Customer>>))]
+        [ProducesResponseType((int)HttpStatusCode.OK, Type = typeof(ResponseObject<PagedList<CustomerResponse>>))]
         [HttpGet]
         public async Task<ActionResult> GetAllCustomer(int pageSize, int pageNumber)
         {
             try
             {
                var result = await customerService.GetAll(pageSize, pageNumber);
-                return Ok(new ResponseObject<PagedList<Customer>>()
+                return Ok(new ResponseObject<PagedList<CustomerResponse>>()
                 {
                     Status = ResponseStatus.Success.ToString(),
                     Message = "Successfully retrieved paginated list of Customer",
