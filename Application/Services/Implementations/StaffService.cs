@@ -53,25 +53,23 @@ namespace Application.Services.Implementations
             if (newStaff != null)
             {
                 var Staff = mapper.Map<Staff>(newStaff);
-                Staff.Status = StaffStatus.Active;
+                Staff.Status =StaffStatus.Active;
                 Staff.Role = StaffRole.Employee;
                 Staff.CreateDate = DateTime.UtcNow;
-                Staff.UpdateDate = Staff.CreateDate;
                 await unitOfWork.StaffRepository.CreateStaff(Staff);
-                await unitOfWork.SaveChangeAsync();
             }
             return newStaff;
         }
 
         public async Task DeleteStaff(int id)
         {
-            var staff = GetById(id);
+            var staff = unitOfWork.StaffRepository.GetById(id);
             if (staff == null)
             {
                 throw new NotFoundException("This ID doesn't exist");
             }
             await unitOfWork.StaffRepository.DeleteStaff(id);
-            await unitOfWork.SaveChangeAsync();
+
         }
 
         public async Task<List<StaffProfileResponse>> GetAll()
@@ -81,7 +79,6 @@ namespace Application.Services.Implementations
             List<StaffProfileResponse> response = new List<StaffProfileResponse>();
             foreach (Staff profile in listStaff)
             {
-                if(profile.Status == StaffStatus.Active)
                 response.Add(mapper.Map<StaffProfileResponse>(profile));
             }
             return response;
@@ -125,7 +122,7 @@ namespace Application.Services.Implementations
         {
             if (newStaff != null)
             {
-                var staff = await GetById(newStaff.Id);
+                var staff = await unitOfWork.StaffRepository.GetById(newStaff.Id);
                 if (staff == null)
                 {
                     throw new NotFoundException("This ID doesn't exist");
@@ -138,12 +135,11 @@ namespace Application.Services.Implementations
                 entityStaff.Role = staff.Role;
                 entityStaff.Status = staff.Status;
                 unitOfWork.StaffRepository.UpdateStaff(entityStaff);
-                await unitOfWork.SaveChangeAsync();
             }
 
         }
 
-        public async Task<List<StaffProfileResponse>> SearchStaff(string keyword, SearchType type)
+        public async Task<List<StaffProfileResponse>> SearchStaff(string keyword, string type)
         {
             List<StaffProfileResponse> staffs = await GetAll();
             List<StaffProfileResponse> searchStaff = new List<StaffProfileResponse>();
@@ -153,32 +149,46 @@ namespace Application.Services.Implementations
             }
             else
             {
-                if (type == SearchType.FirstName)
+                switch (type)
                 {
-                    foreach (var staff in staffs)
-                    {
-                        if (staff.FirstName.ToUpper().Contains(keyword.ToUpper()))
+                    case "FirstName":
                         {
-                            searchStaff.Add(staff);
-                        }
-                    }
-                }
-                else
-                {
-                    if (type == SearchType.LastName)
-                    {
-                        foreach (var staff in staffs)
-                        {
-                            if (staff.LastName.ToUpper().Contains(keyword.ToUpper()))
+                            foreach (var staff in staffs)
                             {
-                                searchStaff.Add(staff);
+                                if (staff.FirstName.ToUpper().Contains(keyword.ToUpper()))
+                                {
+                                    searchStaff.Add(staff);
+                                }
                             }
+                            break;
                         }
-                    }
-                    else
-                    {
-                        if (type == SearchType.Email)
+                    case "LastName":
                         {
+
+                            foreach (var staff in staffs)
+                            {
+                                if (staff.LastName.ToUpper().Contains(keyword.ToUpper()))
+                                {
+                                    searchStaff.Add(staff);
+                                }
+                            }
+                            break;
+                        }
+                    case "FullName":
+                        {
+
+                            foreach (var staff in staffs)
+                            {
+                                if (staff.FirstName.ToUpper().Contains(keyword.ToUpper()) || staff.LastName.ToUpper().Contains(keyword.ToUpper()))
+                                {
+                                    searchStaff.Add(staff);
+                                }
+                            }
+                            break;
+                        }
+                    case "Email":
+                        {
+
                             foreach (var staff in staffs)
                             {
                                 if (staff.Email.ToUpper().Contains(keyword.ToUpper()))
@@ -186,9 +196,9 @@ namespace Application.Services.Implementations
                                     searchStaff.Add(staff);
                                 }
                             }
-
+                            break;
                         }
-                        else
+                    default:
                         {
                             foreach (var staff in staffs)
                             {
@@ -197,16 +207,16 @@ namespace Application.Services.Implementations
                                     searchStaff.Add(staff);
                                 }
                             }
+                            break;
                         }
-
-                    }
                 }
-            }
                 return searchStaff;
             }
 
 
-        public async Task<Staff> UpdateRole(int id, StaffRole upRole)
+        }
+
+        public async Task<Staff> UpdateRole(int id, bool upRole)
         {
             if (id != null)
             {
@@ -215,9 +225,16 @@ namespace Application.Services.Implementations
                 {
                     throw new NotFoundException("This Staff ID doesn't exist");
                 }
-                Staff.Role = upRole;
-                unitOfWork.StaffRepository.UpdateStaff(Staff);
-                await unitOfWork.SaveChangeAsync();
+                if (upRole)
+                {
+                    Staff.Role = StaffRole.Manager;
+                    unitOfWork.StaffRepository.UpdateStaff(Staff);
+                }
+                else
+                {
+                    Staff.Role = StaffRole.Employee;
+                    unitOfWork.StaffRepository.UpdateStaff(Staff);
+                }
                 return Staff;
             }
             else

@@ -11,7 +11,7 @@ namespace Infrastructure.Repositories.Interfaces
         Task<IEnumerable<Staff>> GetAllByName(string name);
         Task<Staff> GetByEmail(string email);
         Task CreateStaff(Staff newStaff);
-        Task UpdateStaff(Staff newStaff);
+        void UpdateStaff(Staff newStaff);
         Task DeleteStaff(int id);
     }
 }

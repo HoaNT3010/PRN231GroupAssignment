@@ -2,7 +2,6 @@
 using Infrastructure.Repositories.Interfaces;
 using Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
-using Domain.Enums;
 
 namespace Infrastructure.Repositories.Implementations
 {
@@ -53,12 +52,7 @@ namespace Infrastructure.Repositories.Implementations
 
         public async Task<Staff> GetById(int id)
         {
-            Staff s= await GetByIdAsync(id);
-            if (s.Status == StaffStatus.Active)
-            {
-                return s;
-            }
-            else {return null; }
+            return await GetByIdAsync(id);
         }
 
         public async Task<Staff?> GetByUsername(string username)
@@ -80,9 +74,9 @@ namespace Infrastructure.Repositories.Implementations
             return staff;
         }
 
-        public async Task UpdateStaff(Staff newStaff)
+        public void UpdateStaff(Staff newStaff)
         {
-            UpdateAsync(newStaff);
+           UpdateAsync(newStaff);
         }
     }
 }
