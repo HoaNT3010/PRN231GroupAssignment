@@ -1,6 +1,11 @@
-﻿using Application.Services.Interfaces;
+﻿using Application.Mappers.Staff;
+using Application.Services.Interfaces;
 using Domain.Entities;
+using Domain.Enums;
 using Infrastructure.DTOs.Request.Staff;
+using Infrastructure.DTOs.Response;
+using Infrastructure.DTOs.Response.Staff;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace WebAPI.Controllers
@@ -20,59 +25,42 @@ namespace WebAPI.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpGet]
-        public async Task<IActionResult> GetAll()
+        [Route("all")]
+        [Authorize]
+        public async Task<ActionResult<ResponseObject<List<StaffProfileResponse>>>> GetAll()
         {
-            return Ok(await _staffService.GetAll());
+            var list=await _staffService.GetAll();
+           if (list!=null)
+            {
+                return Ok(new ResponseObject<List<StaffProfileResponse>>()
+                {
+                    Status = ResponseStatus.Success.ToString(),
+                    Data = list
+                }) ;
+            }
+            else
+            {
+                return Ok(new ResponseObject<StaffProfileResponse>()
+                {
+                    Status=ResponseStatus.Failed.ToString(),
+                    Message="Empty"
+                });
+            }
         }
         /// <summary>
         /// Get a Staff by his/her ID
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        [HttpGet("{id}")]
+        
+        [HttpGet]
+        [Route("{id}")]
+        [Authorize]
         public async Task<IActionResult> GetById(int id)
         {
             try
             {
                 var staff = await _staffService.GetById(id);
-                if (staff != null)
-                {
-                    return Ok(staff);
-                }
-                return NotFound();
-            }
-            catch { return BadRequest(); }
-        }
-        /// <summary>
-        /// Get All Customer by Name
-        /// </summary>
-        /// <param name="name"></param>
-        /// <returns></returns>
-        [HttpGet("{name}")]
-        public async Task<IActionResult> GetByName(string name)
-        {
-            try
-            {
-                var staff = await _staffService.GetAllByName(name);
-                if (staff != null)
-                {
-                    return Ok(staff);
-                }
-                return NotFound();
-            }
-            catch { return BadRequest(); }
-        }
-        /// <summary>
-        /// Get a Staff by his/her email
-        /// </summary>
-        /// <param name="email"></param>
-        /// <returns></returns>
-        [HttpGet("{email}")]
-        public async Task<IActionResult> GetByEmail(string email)
-        {
-            try
-            {
-                var staff = await _staffService.GetByEmail(email);
                 if (staff != null)
                 {
                     return Ok(staff);
@@ -88,16 +76,26 @@ namespace WebAPI.Controllers
         /// <param name="staff"></param>
         /// <returns></returns>
         [HttpPost]
-        public async Task<IActionResult> Create(Staff staff)
+        [Route("create")]
+        [Authorize]
+        public async Task<ActionResult<ResponseObject<StaffCreateRequest>>> Create([FromBody] StaffCreateRequest staff)
         {
             try
             {
-                await _staffService.CreateStaff(staff);
-                return Ok(new { Success = true, Data = "ID:" + staff.Id + " Email " + staff.Email });
+               var result= await _staffService.CreateStaff(staff);
+                return Ok(new ResponseObject<StaffCreateRequest>()
+                {
+                    Status = ResponseStatus.Success.ToString(),
+                    Message = $"Create Staff Success",
+                    Data = result
+                }) ;
             }
             catch (Exception ex)
             {
-                return Ok(new { Success = false, Data = ex.Message });
+                return Ok(new ResponseObject<StaffCreateRequest>() { 
+                    Status=ResponseStatus.Failed.ToString(),
+                    Message = ex.Message
+                });
             }
         }
 
@@ -106,7 +104,9 @@ namespace WebAPI.Controllers
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        [HttpDelete("{id}")]
+        [HttpDelete]
+        [Route("delete/{id}")]
+        [Authorize]
         public async Task<IActionResult> Delete(int id)
         {
             try
@@ -126,35 +126,55 @@ namespace WebAPI.Controllers
         /// <param name="id"></param>
         /// <param name="staff"></param>
         /// <returns></returns>
-        [HttpPut("{id}")]
-        public async Task<IActionResult> Update(int id, Staff staff)
+        [HttpPut]
+        [Route("update/{id}")]
+        [Authorize]
+        public async Task<ActionResult<ResponseObject<StaffUpdateRequest>>> Update([FromRoute] int id, [FromBody] StaffUpdateRequest staff)
         {
             try
             {
-                if (id != staff.Id)
+                await _staffService.UpdateStaff(staff);
+                return Ok(new ResponseObject<StaffUpdateRequest>()
                 {
-                    return BadRequest();
-                }
-                if (await GetById(id) == null)
-                {
-                    return NotFound();
-                }
-                 _staffService.UpdateStaff(staff);
-                return NoContent();
+                    Status = ResponseStatus.Success.ToString(),
+                    Message = $"Update succes",
+                    Data = staff
+                });
             }
-            catch
+            catch (Exception ex)
             {
-                return BadRequest();
+                return Ok(new ResponseObject<StaffUpdateRequest>()
+                {
+                    Status = ResponseStatus.Failed.ToString(),
+                    Message = ex.Message.ToString()
+                });
+              }
+
             }
 
-        }
 
-        [HttpPost]
-        [Route("create")]
-        public async Task<ActionResult> CreateStaff([FromBody] StaffCreateRequest createRequest)
-        {
-            return Ok();
-        }
+        //[HttpPost]
+        //[Route("create")]
+        //public async Task<ActionResult<ResponseObject<StaffCreateRequest>>> CreateStaff([FromBody] StaffCreateRequest createRequest)
+        //{
+        //    try
+        //    {
+        //        _staffService.CreateStaff(createRequest);
+        //        return Ok(new ResponseObject<StaffCreateRequest>()
+        //        {
+        //            Status= ResponseStatus.Success.ToString(),
+        //            Message="Create Success",
+        //            Data= createRequest
+        //        });
+        //    }catch(Exception ex)
+        //    {
+        //        return Ok(new ResponseObject<StaffCreateRequest>()
+        //        {
+        //            Status = ResponseStatus.Failed.ToString(),
+        //            Message = ex.Message.ToString()
+        //        });
+        //    }
+        //}
     }
 }
     
