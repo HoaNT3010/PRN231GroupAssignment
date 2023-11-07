@@ -21,7 +21,6 @@ namespace Infrastructure.Repositories.Implementations
         public async Task AddAsync(T entity)
         {
             await dbSet.AddAsync(entity);
-           
         }
 
         public async Task AddManyAsync(IEnumerable<T> entities)
@@ -53,8 +52,7 @@ namespace Infrastructure.Repositories.Implementations
         {
             return await dbSet.ToListAsync();
         }
-
-        public async Task<T?> GetByIdAsync(object id)
+        public virtual async Task<T?> GetByIdAsync(object id)
         {
             return await dbSet.FindAsync(id);
         }
@@ -110,6 +108,45 @@ namespace Infrastructure.Repositories.Implementations
             bool disableTracking = false)
         {
             IQueryable<T> query = dbSet;
+            try
+            {
+                if (disableTracking)
+                {
+                    query = query.AsNoTracking();
+                }
+
+                if (filter != null)
+                {
+                    query = query.Where(filter);
+                }
+
+                query = includeProperties.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries)
+                    .Aggregate(query, (current, includeProperty) => current.Include(includeProperty));
+
+                int totalCount = await query.CountAsync();
+
+                if (orderBy != null)
+                {
+                    query = orderBy(query);
+                }
+
+                query = query.Skip((pageNumber - 1) * pageSize).Take(pageSize);
+                return new PagedList<T>(await query.ToListAsync(), totalCount, pageNumber, pageSize);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Error when trying to query paginated data for entity {nameof(T)}");
+            }
+        }
+        public virtual async Task<PagedList<T>> GetPaginatedAsync(
+            IQueryable<T> query,
+            int pageSize,
+            int pageNumber,
+            Expression<Func<T, bool>>? filter = null,
+            Func<IQueryable<T>, IOrderedQueryable<T>>? orderBy = null,
+            string includeProperties = "",
+            bool disableTracking = false)
+        {
             try
             {
                 if (disableTracking)

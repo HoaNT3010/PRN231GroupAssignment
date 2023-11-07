@@ -46,20 +46,19 @@ namespace WebAPI.Controllers
 
         [HttpGet]
         [Produces("application/json")]
-        [ProducesResponseType((int)HttpStatusCode.OK, Type = typeof(ResponseObject<PagedList<CategoryResponse>>))]
-        public async Task<ActionResult> GetCategoryList([FromQuery] QueryStringParameters parameters)
+        [ProducesResponseType((int)HttpStatusCode.OK, Type = typeof(ResponseObject<List<CategoryResponse>>))]
+        public async Task<ActionResult<ResponseObject<List<CategoryResponse>>>> GetCategoryList()
         {
             _logger.LogInformation("Retrieving data of categories");
-            var result = await _categoryService.GetCategoryList(parameters);
-            return Ok(new ResponseObject<PagedList<CategoryResponse>>()
+            var result = await _categoryService.GetCategoryList();
+            return Ok(new ResponseObject<List<CategoryResponse>>()
             {
                 Status = ResponseStatus.Success.ToString(),
                 Message = "Successfully retrieved paginated list of category",
                 Data = result
             });
         }
-        [HttpGet]
-        [Route("{id}")]
+        [HttpGet("{id}")]
         [Produces("application/json")]
         [ProducesResponseType((int)HttpStatusCode.OK, Type = typeof(ResponseObject<CategoryResponse>))]
         [ProducesResponseType((int)HttpStatusCode.NotFound, Type = typeof(ErrorDetail))]
@@ -77,8 +76,7 @@ namespace WebAPI.Controllers
             });
         }
 
-        [HttpPut]
-        [Route("{id}")]
+        [HttpPut("{id}")]
         [Produces("application/json")]
         [ProducesResponseType((int)HttpStatusCode.OK, Type = typeof(ResponseObject<CategoryResponse>))]
         public async Task<ActionResult<ResponseObject<CategoryResponse>>> UpdateCategory([FromRoute] int id,[FromBody] CategoryUpdateRequest request)
@@ -93,8 +91,22 @@ namespace WebAPI.Controllers
             });
         }
 
-        [HttpDelete]
-        [Route("{id}")]
+        [HttpPut("/{id}/cstatus")]
+        [Produces("application/json")]
+        [ProducesResponseType((int)HttpStatusCode.OK, Type = typeof(ResponseObject<CategoryResponse>))]
+        public async Task<ActionResult<ResponseObject<CategoryResponse>>> UpdateCategoryStatus([FromRoute] int id, [FromBody] CategoryStatusUpdateRequest request)
+        {
+            _logger.LogInformation("Update category with Id: {id}", id);
+            var result = await _categoryService.updateCategoryStatus(id, request);
+            return Ok(new ResponseObject<CategoryResponse>()
+            {
+                Status = ResponseStatus.Success.ToString(),
+                Message = $"Category [Id: {id}] has been updated",
+                Data = result
+            });
+        }
+
+        [HttpDelete("{id}")]
         [Produces("application/json")]
         [ProducesResponseType((int)HttpStatusCode.OK, Type = typeof(ResponseObject<CategoryResponse>))]
         public async Task<ActionResult<ResponseObject<CategoryResponse>>> DeleteCategory([FromRoute] int id)

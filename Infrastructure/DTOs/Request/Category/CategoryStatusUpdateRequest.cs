@@ -7,8 +7,8 @@ using System.Threading.Tasks;
 
 namespace Infrastructure.DTOs.Request.Category
 {
-    public class CategoryUpdateRequest
+    public class CategoryStatusUpdateRequest
     {
-        public string? Name { get; set; }
+        public CategoryStatus? Status { get; set; }
     }
 }

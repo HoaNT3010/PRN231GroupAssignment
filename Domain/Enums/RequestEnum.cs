@@ -7,4 +7,11 @@
         TotalPriceDescending,
         TotalPriceAscending
     }
+    public enum ProductSortOrder
+    {
+        NameDescending,
+        NameAscending,
+        PriceDescending,
+        PriceAscending
+    }
 }

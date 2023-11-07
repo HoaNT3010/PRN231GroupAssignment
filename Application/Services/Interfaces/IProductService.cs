@@ -16,7 +16,9 @@ namespace Application.Services.Interfaces
     {
         Task<ProductResponse> deleteProduct(int id);
         Task<ProductResponse> updateProduct(int id, ProductUpdateRequest request);
-        Task<PagedList<ProductResponse>> GetProductList(QueryStringParameters parameters);
+        Task<ProductResponse> updateProductStatus(int id, ProductStatusUpdateRequest request);
+        Task<ProductResponse> updateProductQuantity(int id, ProductQuantityUpdateRequest request);
+        Task<PagedList<ProductResponse>> GetProductList(ProductListParameters parameters);
         Task<ProductResponse> GetProductById(int id);
         Task<ProductResponse> CreateProduct(ProductCreateRequest request);
     }

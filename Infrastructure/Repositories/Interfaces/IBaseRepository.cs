@@ -25,5 +25,13 @@ namespace Infrastructure.Repositories.Interfaces
             Func<IQueryable<T>, IOrderedQueryable<T>>? orderBy,
             string includeProperties,
             bool disableTracking = false);
+        Task<PagedList<T>> GetPaginatedAsync(
+            IQueryable<T> query,
+            int pageSize,
+            int pageNumber,
+            Expression<Func<T, bool>>? filter = null,
+            Func<IQueryable<T>, IOrderedQueryable<T>>? orderBy = null,
+            string includeProperties = "",
+            bool disableTracking = false);
     }
 }

@@ -16,8 +16,9 @@ namespace Application.Services.Interfaces
     {
         Task<CategoryResponse> deleteCategory(int id);
         Task<CategoryResponse> updateCategory(int id,CategoryUpdateRequest request);
+        Task<CategoryResponse> updateCategoryStatus(int id, CategoryStatusUpdateRequest request);
         Task<CategoryResponse> GetCategoryById(int id);
-        Task<PagedList<CategoryResponse>> GetCategoryList(QueryStringParameters parameters);
+        Task<List<CategoryResponse>> GetCategoryList();
         Task<CategoryResponse> CreateCategory(CategoryCreateRequest request);
     }
 }

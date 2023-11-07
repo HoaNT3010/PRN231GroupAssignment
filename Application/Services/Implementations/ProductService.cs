@@ -93,6 +93,76 @@ namespace Application.Services.Implementations
                 throw new Exception("Error occurred when trying to update product");
             }
         }
+        public async Task<ProductResponse> updateProductStatus(int id, ProductStatusUpdateRequest request)
+        {
+            if (id <= 0)
+            {
+                throw new BadRequestException("Invalid product Id");
+            }
+            var productEntity = await _unitOfWork.ProductRepository.GetByIdAsync(id);
+            if (productEntity == null)
+            {
+                throw new NotFoundException($"Cannot find product with Id: {id}");
+            }
+
+            var updatedProduct = _mapper.Map(request, productEntity);
+            var categoryEntity = await _unitOfWork.CategoryRepository.GetByIdAsync(updatedProduct.CategoryId);
+            if (categoryEntity == null)
+            {
+                throw new Exception();
+            }
+            updatedProduct.Category = categoryEntity;
+            try
+            {
+                await _unitOfWork.BeginTransactionAsync();
+                _unitOfWork.ProductRepository.UpdateAsync(updatedProduct);
+                await _unitOfWork.SaveChangeAsync();
+
+                await _unitOfWork.CommitAsync();
+                return _mapper.Map<ProductResponse>(updatedProduct);
+            }
+            catch (Exception ex)
+            {
+                await _unitOfWork.RollbackAsync();
+                _logger.LogError(ex, "Error occurred when trying to update product");
+                throw new Exception("Error occurred when trying to update product");
+            }
+        }
+        public async Task<ProductResponse> updateProductQuantity(int id, ProductQuantityUpdateRequest request)
+        {
+            if (id <= 0)
+            {
+                throw new BadRequestException("Invalid product Id");
+            }
+            var productEntity = await _unitOfWork.ProductRepository.GetByIdAsync(id);
+            if (productEntity == null)
+            {
+                throw new NotFoundException($"Cannot find product with Id: {id}");
+            }
+
+            var updatedProduct = _mapper.Map(request, productEntity);
+            var categoryEntity = await _unitOfWork.CategoryRepository.GetByIdAsync(updatedProduct.CategoryId);
+            if (categoryEntity == null)
+            {
+                throw new Exception();
+            }
+            updatedProduct.Category = categoryEntity;
+            try
+            {
+                await _unitOfWork.BeginTransactionAsync();
+                _unitOfWork.ProductRepository.UpdateAsync(updatedProduct);
+                await _unitOfWork.SaveChangeAsync();
+
+                await _unitOfWork.CommitAsync();
+                return _mapper.Map<ProductResponse>(updatedProduct);
+            }
+            catch (Exception ex)
+            {
+                await _unitOfWork.RollbackAsync();
+                _logger.LogError(ex, "Error occurred when trying to update product");
+                throw new Exception("Error occurred when trying to update product");
+            }
+        }
         public async Task<ProductResponse> CreateProduct(ProductCreateRequest request)
         {
             try
@@ -137,7 +207,7 @@ namespace Application.Services.Implementations
             return _mapper.Map<ProductResponse>(productEntity);
         }
 
-        public async Task<PagedList<ProductResponse>> GetProductList(QueryStringParameters parameters)
+        public async Task<PagedList<ProductResponse>> GetProductList(ProductListParameters parameters)
         {
             var list = await _unitOfWork.ProductRepository.GetProductList(parameters);
             if (list == null)

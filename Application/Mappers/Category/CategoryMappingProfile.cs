@@ -27,6 +27,9 @@ namespace Application.Mappers.Category
             CreateMap<CategoryUpdateRequest, Domain.Entities.Category>()
                 .ForAllMembers(opt => opt.Condition((src, dest, srcMember) => srcMember != null));
 
+            CreateMap<CategoryStatusUpdateRequest, Domain.Entities.Category>()
+                .ForAllMembers(opt => opt.Condition((src, dest, srcMember) => srcMember != null));
+
         }
     }
 }

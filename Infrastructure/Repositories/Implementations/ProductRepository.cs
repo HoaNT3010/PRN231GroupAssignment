@@ -12,19 +12,36 @@ namespace Infrastructure.Repositories.Implementations
         public ProductRepository(StoreDbContext context) : base(context)
         {
         }
-        public async Task<PagedList<Product>> GetProductList(QueryStringParameters parameters)
+        public async Task<PagedList<Product>> GetProductList(ProductListParameters parameters)
         {
             var query = this.context.Set<Product>().Include(p => p.Category);
-            var list = await GetPaginatedAsync(parameters.PageSize, parameters.PageNumber);
+            var sortQuery = CheckSortProductQuery(parameters);
+            var list = await GetPaginatedAsync(query, parameters.PageSize, parameters.PageNumber,null, sortQuery);
 
             return list;
 
         }
-        public async Task<Product?> GetByIdAsync(object id)
+        public async override Task<Product?> GetByIdAsync(object id)
         {
-            return await dbSet
+            return await this.dbSet
                 .Include(e => e.Category)
                 .SingleOrDefaultAsync(e => e.Id == (int)id);
+        }
+        private Func<IQueryable<Product>, IOrderedQueryable<Product>> CheckSortProductQuery(ProductListParameters parameters)
+        {
+            switch (parameters.SortProduct)
+            {
+                case Domain.Enums.ProductSortOrder.NameDescending:
+                    return (query => query.OrderByDescending(i => i.Name));
+                case Domain.Enums.ProductSortOrder.NameAscending:
+                    return (query => query.OrderBy(i => i.Name));
+                case Domain.Enums.ProductSortOrder.PriceDescending:
+                    return (query => query.OrderByDescending(i => i.UnitPrice));
+                case Domain.Enums.ProductSortOrder.PriceAscending:
+                    return (query => query.OrderBy(i => i.UnitPrice));
+                default:
+                    return (query => query.OrderByDescending(i => i.Name));
+            }
         }
     }
 }
