@@ -17,5 +17,6 @@ namespace Infrastructure.DTOs.Response.Customer
 
         public DateTime CreateDate { get; set; }
         public DateTime UpdateDate { get; set; }
+
     }
 }
