@@ -27,4 +27,5 @@ namespace Application.Mappers.CustomerMapping
             CreateMap<PagedList<Customer>, PagedList<CustomerResponse>>();
         }
     }
+
 }

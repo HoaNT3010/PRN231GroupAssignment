@@ -28,6 +28,10 @@ namespace Application
             services.AddScoped<IInvoiceService, InvoiceService>();
             services.AddScoped<IWalletService, WalletService>();
             services.AddScoped<ICustomerServices, CustomerServices>();
+            services.AddScoped<ICardService, CardService>();
+            services.AddScoped<ICategoryService, CategoryService>();
+            services.AddScoped<IProductService, ProductService>();
+            services.AddScoped<IMomoService, MomoService>();
 
 
             return services;

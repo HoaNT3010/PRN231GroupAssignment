@@ -12,7 +12,8 @@ namespace Application.Services.Interfaces
 {
     public interface ICustomerServices
     {
-        public  Task<Customer> AddNewCustomer(CustomerRequest customer);
+
+        public Task<Customer> AddNewCustomer(CustomerRequest customer);
         public Task<Invoice> GetInvoiceWithCustomerId(int customerId);
         public Task<Customer> GetCustomerByID(int id);
         public Task<PagedList<CustomerResponse>> GetAll(int pageSize, int pageNumber);
