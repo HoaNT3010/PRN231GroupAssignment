@@ -7,10 +7,8 @@ using System.Threading.Tasks;
 
 namespace Infrastructure.DTOs.Request.Product
 {
-    public class ProductUpdateRequest
+    public class ProductStatusUpdateRequest
     {
-        public string? Name { get; set; }
-        public decimal? UnitPrice { get; set; }
-        public int? CategoryId { get; set; }
+        public ProductStatus? Status { get; set; }
     }
 }

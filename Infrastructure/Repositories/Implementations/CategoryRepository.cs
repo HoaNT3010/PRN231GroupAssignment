@@ -11,9 +11,5 @@ namespace Infrastructure.Repositories.Implementations
         public CategoryRepository(StoreDbContext context) : base(context)
         {
         }
-        public async Task<PagedList<Category>> GetCategorList(QueryStringParameters parameters)
-        {
-            return await GetPaginatedAsync(parameters.PageSize, parameters.PageNumber);
-        }
     }
 }

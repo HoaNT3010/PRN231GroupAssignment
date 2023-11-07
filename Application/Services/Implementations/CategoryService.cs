@@ -97,14 +97,16 @@ namespace Application.Services.Implementations
             return _mapper.Map<CategoryResponse>(categoryEntity);
         }
 
-        public async Task<PagedList<CategoryResponse>> GetCategoryList(QueryStringParameters parameters)
+        public async Task<List<CategoryResponse>> GetCategoryList()
         {
-            var list = await _unitOfWork.CategoryRepository.GetCategorList(parameters);
-            if (list == null)
+            var query = await _unitOfWork.CategoryRepository.GetAllAsync();
+            if (query == null)
             {
                 throw new NotFoundException("Cannot find products with given parameters");
             }
-            return _mapper.Map<PagedList<CategoryResponse>>(list);
+            var list = query.ToList();
+            
+            return _mapper.Map<List<CategoryResponse>>(list);
         }
 
         public async Task<CategoryResponse> updateCategory(int id, CategoryUpdateRequest request)
@@ -125,6 +127,34 @@ namespace Application.Services.Implementations
                  _unitOfWork.CategoryRepository.UpdateAsync(updatedCategory);
                 await _unitOfWork.SaveChangeAsync();
       
+                await _unitOfWork.CommitAsync();
+                return _mapper.Map<CategoryResponse>(updatedCategory);
+            }
+            catch (Exception ex)
+            {
+                await _unitOfWork.RollbackAsync();
+                _logger.LogError(ex, "Error occurred when trying to create category");
+                throw new Exception("Error occurred when trying to create category");
+            }
+        }
+        public async Task<CategoryResponse> updateCategoryStatus(int id, CategoryStatusUpdateRequest request)
+        {
+            if (id <= 0)
+            {
+                throw new BadRequestException("Invalid category Id");
+            }
+            var categoryEntity = await _unitOfWork.CategoryRepository.GetByIdAsync(id);
+            if (categoryEntity == null)
+            {
+                throw new NotFoundException($"Cannot find category with Id: {id}");
+            }
+            var updatedCategory = _mapper.Map(request, categoryEntity);
+            try
+            {
+                await _unitOfWork.BeginTransactionAsync();
+                _unitOfWork.CategoryRepository.UpdateAsync(updatedCategory);
+                await _unitOfWork.SaveChangeAsync();
+
                 await _unitOfWork.CommitAsync();
                 return _mapper.Map<CategoryResponse>(updatedCategory);
             }

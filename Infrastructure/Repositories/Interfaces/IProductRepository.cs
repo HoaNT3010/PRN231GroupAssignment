@@ -6,6 +6,6 @@ namespace Infrastructure.Repositories.Interfaces
 {
     public interface IProductRepository : IBaseRepository<Product>
     {
-        Task<PagedList<Product>> GetProductList(QueryStringParameters parameters);
+        Task<PagedList<Product>> GetProductList(ProductListParameters parameters);
     }
 }
