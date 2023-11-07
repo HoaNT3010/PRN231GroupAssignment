@@ -1,8 +1,10 @@
 ﻿using Application.Services.Interfaces;
+using AutoMapper;
 using Domain.Entities;
 using Infrastructure.Common;
 using Infrastructure.Data;
 using Infrastructure.DTOs.Request.Customer;
+using Infrastructure.DTOs.Response.Customer;
 using Infrastructure.Repositories.Implementations;
 using System;
 using System.Collections.Generic;
@@ -16,9 +18,11 @@ namespace Application.Services.Implementations
     public class CustomerServices : ICustomerServices
     {
         private readonly IUnitOfWork unitOfWork;
-        public CustomerServices(IUnitOfWork unitOfWork)
+        private readonly IMapper mapper;
+        public CustomerServices(IUnitOfWork unitOfWork,IMapper mapper)
         {
             this.unitOfWork = unitOfWork;
+            this.mapper = mapper;
         }
 
         public async Task<Customer> AddNewCustomer(CustomerRequest customer)
@@ -41,15 +45,18 @@ namespace Application.Services.Implementations
 
         }
 
-        public async Task<PagedList<Customer>> GetAll(int pageSize, int pageNumber)
+        public async Task<PagedList<CustomerResponse>> GetAll(int pageSize, int pageNumber)
         {
             var paging = unitOfWork.CustomerRepository.GetAll(pageSize, pageNumber).Result;
-            if( paging.Items.Count == 0)
+            if (paging.Items.Count == 0)
             {
                 pageSize = 10; pageNumber = 1;
-                return await unitOfWork.CustomerRepository.GetAll(pageSize, pageNumber);
+                var result = await unitOfWork.CustomerRepository.GetAll(pageSize, pageNumber);
+                return mapper.Map<PagedList<CustomerResponse>>(result);
+
             }
-            return paging;
+            return mapper.Map<PagedList<CustomerResponse>>(paging);
+
 
         }
 
