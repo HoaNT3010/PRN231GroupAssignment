@@ -1,5 +1,6 @@
 ﻿using Application.Mappers.Staff;
 using Application.Services.Interfaces;
+using AutoMapper;
 using Domain.Entities;
 using Domain.Enums;
 using Infrastructure.Data;
@@ -57,21 +58,21 @@ namespace WebAPI.Controllers
         [HttpGet]
         [Route("{id}")]
         //[Authorize]
-        public async Task<ActionResult<ResponseObject<Staff>>> GetById(int id)
+        public async Task<ActionResult<ResponseObject<StaffProfileResponse>>> GetById(int id)
         {
             try
             {
                 var staff = await _staffService.GetById(id);
                 if (staff != null)
                 {
-                    return Ok(new ResponseObject<Staff>()
+                    return Ok(new ResponseObject<StaffProfileResponse>()
                     {
                         Status = ResponseStatus.Success.ToString(),
                         Message = $"Get Staff by ID",
                         Data = staff
                     });
                 }
-                return Ok(new ResponseObject<Staff>()
+                return Ok(new ResponseObject<StaffProfileResponse>()
                 {
                     Status = ResponseStatus.Failed.ToString(),
                     Message = $"Not found this Staff ID",
@@ -80,7 +81,7 @@ namespace WebAPI.Controllers
             }
             catch (Exception ex)
             {
-                return Ok(new ResponseObject<String>()
+                return Ok(new ResponseObject<string>()
                 {
                     Status = ResponseStatus.Failed.ToString(),
                     Message = $"Get Staff by ID",
@@ -127,15 +128,15 @@ namespace WebAPI.Controllers
         [HttpDelete]
         [Route("delete/{id}")]
         //[Authorize]
-        public async Task<ActionResult<ResponseObject<Staff>>> Delete(int id)
+        public async Task<ActionResult<ResponseObject<StaffProfileResponse>>> Delete(int id)
         {
             try
             {
-                Staff s= await _staffService.GetById(id);
+                var s= await _staffService.GetById(id);
                 if (s != null)
                 {
                     await _staffService.DeleteStaff(id);
-                    return Ok(new ResponseObject<Staff>()
+                    return Ok(new ResponseObject<StaffProfileResponse>()
                     {
                         Status = ResponseStatus.Success.ToString(),
                         Message = $"Delete Successfully",
@@ -144,7 +145,7 @@ namespace WebAPI.Controllers
                 }
                 else
                 {
-                    return Ok(new ResponseObject<Staff>()
+                    return Ok(new ResponseObject<StaffProfileResponse>()
                     {
                         Status = ResponseStatus.Failed.ToString(),
                         Message = $"Delete Faile - Can't Find this Staff"
@@ -194,9 +195,9 @@ namespace WebAPI.Controllers
 
         }
         [HttpPut]
-        [Route("UpdateRole")]
+        [Route("UpdateRole/{id}/{role}")]
         //[Authorize]
-        public async Task<ActionResult<ResponseObject<Staff>>> UpdateRole(int id, StaffRole role)
+        public async Task<ActionResult<ResponseObject<Staff>>> UpdateRole([FromRoute] int id,[FromRoute] StaffRole role)
         {
             try
             {

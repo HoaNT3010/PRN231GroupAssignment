@@ -17,8 +17,7 @@ namespace Application.Mappers.Staff
             CreateMap<Domain.Entities.Staff, StaffProfileResponse>()
                     .ForMember(dest => dest.DateOfBirth, src => src.MapFrom(src => src.DateOfBirth.ToString()))
                                    .ForMember(dest => dest.CreateDate, src => src.MapFrom(src => src.CreateDate.ToString()))
-                    .ForMember(dest => dest.UpdateDate, src => src.MapFrom(src => src.UpdateDate.ToString()))
-                                    .ForMember(dest => dest.Password, src => src.MapFrom(src => BCrypt.Net.BCrypt.HashPassword(src.PasswordHash)));
+                    .ForMember(dest => dest.UpdateDate, src => src.MapFrom(src => src.UpdateDate.ToString()));
         }
     }
 }
