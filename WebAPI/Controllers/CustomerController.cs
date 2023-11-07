@@ -22,7 +22,7 @@ namespace WebAPI.Controllers
 
         public CustomerController(ICustomerServices customerService)
         {
- 
+
             this.customerService = customerService;
         }
         /// <summary>
@@ -37,13 +37,13 @@ namespace WebAPI.Controllers
         {
             try
             {
-               var result = await customerService.GetAll(pageSize, pageNumber);
+                var result = await customerService.GetAll(pageSize, pageNumber);
                 return Ok(new ResponseObject<PagedList<CustomerResponse>>()
                 {
                     Status = ResponseStatus.Success.ToString(),
                     Message = "Successfully retrieved paginated list of Customer",
                     Data = result
-                });;
+                }); ;
             }
             catch
             {
@@ -84,8 +84,9 @@ namespace WebAPI.Controllers
         [HttpPut]
         public async Task<IActionResult> PutUpdateCustomer([FromBody] UpdateCustomerRequest customer)
         {
-            try { 
-            customerService.UpdateCustomer(customer);
+            try
+            {
+                customerService.UpdateCustomer(customer);
                 return Ok(new ResponseObject<Customer>()
                 {
                     Status = ResponseStatus.Success.ToString(),
@@ -131,6 +132,7 @@ namespace WebAPI.Controllers
         [HttpGet("InvoiceCustomer/{customerId}")]
         public async Task<ActionResult<Invoice>> GetInvoinceCustomer([FromRoute] int customerId)
         {
+
             try
             {
                 var customer = await customerService.GetInvoiceWithCustomerId(customerId);
