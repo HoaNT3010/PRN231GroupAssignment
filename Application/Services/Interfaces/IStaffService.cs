@@ -21,9 +21,9 @@ namespace Application.Services.Interfaces
         public Task<List<StaffProfileResponse>> GetAll();
 
 
-        public Task<Staff> GetById(int id);
+        public Task<StaffProfileResponse> GetById(int id);
 
-        public Task<Staff?> GetByUsername(string username);
+        public Task<StaffProfileResponse?> GetByUsername(string username);
 
         public Task<StaffLoginResponse?> Login(StaffLoginRequest loginRequest);
         public Task UpdateStaff(StaffUpdateRequest newStaff);

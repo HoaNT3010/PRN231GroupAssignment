@@ -15,6 +15,7 @@ namespace Infrastructure.Repositories.Implementations
         public async Task CreateStaff(Staff newStaff)
         {
              await AddAsync(newStaff);
+
                 }
 
         public async Task DeleteStaff(int id)

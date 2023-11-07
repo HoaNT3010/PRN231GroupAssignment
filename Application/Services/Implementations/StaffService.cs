@@ -89,24 +89,32 @@ namespace Application.Services.Implementations
 
 
 
-        public async Task<Staff> GetById(int id)
+        public async Task<StaffProfileResponse> GetById(int id)
         {
             Staff s = null;
             if (id != null)
             {
                 s = await unitOfWork.StaffRepository.GetById(id);
+                if (s != null)
+                {
+                    return mapper.Map<StaffProfileResponse>(s);
+                }
             }
-            return s;
+            return null;
         }
 
-        public async Task<Staff?> GetByUsername(string username)
+        public async Task<StaffProfileResponse?> GetByUsername(string username)
         {
             Staff s = null;
             if (username != null)
             {
                 s = await unitOfWork.StaffRepository.GetByUsername(username);
+                if(s != null)
+                {
+                    return mapper?.Map<StaffProfileResponse?>(s);
+                }
             }
-            return s;
+            return null;
         }
 
         public async Task<StaffLoginResponse?> Login(StaffLoginRequest loginRequest)
@@ -125,7 +133,7 @@ namespace Application.Services.Implementations
         {
             if (newStaff != null)
             {
-                var staff = await GetById(newStaff.Id);
+                var staff = await unitOfWork.StaffRepository.GetById(newStaff.Id);
                 if (staff == null)
                 {
                     throw new NotFoundException("This ID doesn't exist");
@@ -210,13 +218,13 @@ namespace Application.Services.Implementations
         {
             if (id != null)
             {
-                var Staff = await GetById(id);
+                var Staff = await unitOfWork.StaffRepository.GetById(id);
                 if (Staff == null)
                 {
                     throw new NotFoundException("This Staff ID doesn't exist");
                 }
                 Staff.Role = upRole;
-              await  unitOfWork.StaffRepository.UpdateStaff(Staff);
+               await unitOfWork.StaffRepository.UpdateStaff(Staff);
                 await unitOfWork.SaveChangeAsync();
                 return Staff;
             }
