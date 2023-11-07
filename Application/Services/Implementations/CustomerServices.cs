@@ -19,7 +19,7 @@ namespace Application.Services.Implementations
     {
         private readonly IUnitOfWork unitOfWork;
         private readonly IMapper mapper;
-        public CustomerServices(IUnitOfWork unitOfWork,IMapper mapper)
+        public CustomerServices(IUnitOfWork unitOfWork, IMapper mapper)
         {
             this.unitOfWork = unitOfWork;
             this.mapper = mapper;
@@ -72,8 +72,8 @@ namespace Application.Services.Implementations
 
         public async void UpdateCustomer(UpdateCustomerRequest customer)
         {
-           unitOfWork.CustomerRepository.UpdateCustomer(customer);
-           await unitOfWork.SaveChangeAsync();
+            unitOfWork.CustomerRepository.UpdateCustomer(customer);
+            await unitOfWork.SaveChangeAsync();
         }
     }
 }
