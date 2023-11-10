@@ -38,12 +38,24 @@ namespace WebAPI.Controllers
             try
             {
                 var result = await customerService.GetAll(pageSize, pageNumber);
-                return Ok(new ResponseObject<PagedList<CustomerResponse>>()
+                if (result.Items.Count == 0)
                 {
-                    Status = ResponseStatus.Success.ToString(),
-                    Message = "Successfully retrieved paginated list of Customer",
-                    Data = result
-                }); ;
+                    return Ok(new ResponseObject<PagedList<CustomerResponse>>()
+                    {
+                        Status = ResponseStatus.Success.ToString(),
+                        Message = "No data to show",
+                        Data = result
+                    }); ;
+                }
+                else
+                {
+                    return Ok(new ResponseObject<PagedList<CustomerResponse>>()
+                    {
+                        Status = ResponseStatus.Success.ToString(),
+                        Message = "Successfully retrieved paginated list of Customer",
+                        Data = result
+                    }); ;
+                }
             }
             catch
             {
@@ -80,14 +92,14 @@ namespace WebAPI.Controllers
         /// </summary>
         /// <param name="customer">Parameters for Customer information need update</param>
         /// <returns></returns>
-        [ProducesResponseType((int)HttpStatusCode.OK, Type = typeof(ResponseObject<Customer>))]
+        [ProducesResponseType((int)HttpStatusCode.OK, Type = typeof(ResponseObject<CustomerResponse>))]
         [HttpPut]
         public async Task<IActionResult> PutUpdateCustomer([FromBody] UpdateCustomerRequest customer)
         {
             try
             {
                 customerService.UpdateCustomer(customer);
-                return Ok(new ResponseObject<Customer>()
+                return Ok(new ResponseObject<CustomerResponse>()
                 {
                     Status = ResponseStatus.Success.ToString(),
                     Message = "Successfully update Customer",
@@ -103,15 +115,15 @@ namespace WebAPI.Controllers
         /// </summary>
         /// <param name="id">Parameters id  to search Customer</param>
         /// <returns></returns>
-        [ProducesResponseType((int)HttpStatusCode.OK, Type = typeof(ResponseObject<Customer>))]
+        [ProducesResponseType((int)HttpStatusCode.OK, Type = typeof(ResponseObject<CustomerResponse>))]
         [HttpGet("{id}")]
-        public async Task<ActionResult<Customer>> GetCustomerByID([FromRoute] int id)
+        public async Task<ActionResult<CustomerResponse>> GetCustomerByID([FromRoute] int id)
         {
             try
             {
                 var customer = await customerService.GetCustomerByID(id);
 
-                return Ok(new ResponseObject<Customer>()
+                return Ok(new ResponseObject<CustomerResponse>()
                 {
                     Status = ResponseStatus.Success.ToString(),
                     Message = "Successfully update Customer",

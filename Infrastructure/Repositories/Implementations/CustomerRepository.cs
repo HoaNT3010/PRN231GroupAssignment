@@ -42,7 +42,7 @@ namespace Infrastructure.Repositories.Implementations
         public async Task<Customer> GetCustomerByID(int id)
         {
 
-            return await dbSet.Include(x => x.Cards).FirstOrDefaultAsync(x => x.Id == id);
+            return await dbSet.FirstOrDefaultAsync(x => x.Id == id);
         }
 
         public async void UpdateCustomer(UpdateCustomerRequest customer)

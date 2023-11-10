@@ -48,21 +48,22 @@ namespace Application.Services.Implementations
         public async Task<PagedList<CustomerResponse>> GetAll(int pageSize, int pageNumber)
         {
             var paging = unitOfWork.CustomerRepository.GetAll(pageSize, pageNumber).Result;
-            if (paging.Items.Count == 0)
-            {
-                pageSize = 10; pageNumber = 1;
-                var result = await unitOfWork.CustomerRepository.GetAll(pageSize, pageNumber);
-                return mapper.Map<PagedList<CustomerResponse>>(result);
+            //if (paging.Items.Count == 0)
+            //{
+            //    pageSize = 10; pageNumber = 1;
+            //    var result = await unitOfWork.CustomerRepository.GetAll(pageSize, pageNumber);
+            //    return mapper.Map<PagedList<CustomerResponse>>(result);
 
-            }
+            //}
             return mapper.Map<PagedList<CustomerResponse>>(paging);
 
 
         }
 
-        public async Task<Customer> GetCustomerByID(int id)
+        public async Task<CustomerResponse> GetCustomerByID(int id)
         {
-            return await unitOfWork.CustomerRepository.GetCustomerByID(id);
+            var result = await unitOfWork.CustomerRepository.GetCustomerByID(id);
+                return mapper.Map<CustomerResponse>(result);
         }
 
         public async Task<Invoice> GetInvoiceWithCustomerId(int customerId)
